@@ -31,8 +31,12 @@
 *.out
 *.app
 
-# Visual Studio files
+# Visual Studio files (C++)
 .vs/
 *.user
 */out/
 out/
+
+# Visual Studio files (C#)
+*/bin/
+*/obj/

@@ -9,8 +9,9 @@ int main(int argc, char** argv)
 
 	int a = 4;
 	int b = 7;
-	int r = Test(a, b);
-	printf("%d + %d = %d\n", a, b, r);
+	Complex* r = new Complex();
+	Test(a, b, r);
+	printf("Test(%d, %d) = %f + %fi\n", a, b, r->real, r->imag);
 
 	return EXIT_SUCCESS;
 }

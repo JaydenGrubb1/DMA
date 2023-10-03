@@ -1,6 +1,7 @@
 #include "core.h"
 
-int Test(int a, int b)
+void Test(int a, int b, Complex *c)
 {
-	return a + b;
+	c->real = a + b;
+	c->imag = a - b;
 }
