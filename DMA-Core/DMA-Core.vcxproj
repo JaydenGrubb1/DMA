@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="conf.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="fft.h" />
   </ItemGroup>

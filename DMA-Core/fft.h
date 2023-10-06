@@ -1,16 +1,17 @@
 #pragma once
 
-#include <array>
 #include <complex>
 #include <span>
 
-#define TWIDDLE_SIZE 2048
+#include "conf.h"
 
 using complex = std::complex<float>;
 
 namespace DMA::FFT {
-
-	static std::array<complex, TWIDDLE_SIZE> twiddles;
+	/// <summary>
+	/// Precomputed twiddle factors
+	/// </summary>
+	static complex twiddles[TWIDDLE_SIZE];
 
 	/// <summary>
 	/// Initializes the FFT module
@@ -23,5 +24,4 @@ namespace DMA::FFT {
 	/// <param name="in">The input buffer</param>
 	/// <param name="out">The output buffer</param>
 	void fft(std::span<complex> in, std::span<complex> out);
-
 }

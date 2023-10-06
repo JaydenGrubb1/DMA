@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <array>
 
 #include "core.h"
 #include "fft.h"
