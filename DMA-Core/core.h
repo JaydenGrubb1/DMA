@@ -6,4 +6,4 @@
 #define DMACORE_API __declspec(dllimport)
 #endif
 
-extern "C" DMACORE_API int Test(int a, int b);
+extern "C" DMACORE_API void Test(void);
