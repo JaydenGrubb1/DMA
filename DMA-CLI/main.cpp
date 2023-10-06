@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv) {
 	printf("Invoking DMA-Core...\n");
-	Test();
+	DMA::Test();
 
 	return EXIT_SUCCESS;
 }

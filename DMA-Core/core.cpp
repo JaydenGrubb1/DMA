@@ -4,7 +4,7 @@
 #include "core.h"
 #include "fft.h"
 
-void Test(void) {
+void DMA::Test(void) {
 	printf("Executing DMA-Core::Test()\n");
 
 	std::vector<complex> in = { 4, 7, 2, 3 };

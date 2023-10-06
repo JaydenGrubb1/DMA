@@ -6,4 +6,6 @@
 #define DMACORE_API __declspec(dllimport)
 #endif
 
-extern "C" DMACORE_API void Test(void);
+namespace DMA {
+	extern "C" DMACORE_API void Test(void);
+}
