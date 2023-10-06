@@ -21,9 +21,6 @@
     <ClInclude Include="fft.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="conf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="wav.h">
       <Filter>Header Files</Filter>
     </ClInclude>

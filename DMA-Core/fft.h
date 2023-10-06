@@ -4,11 +4,14 @@
 #include <span>
 #include <vector>
 
-#include "conf.h"
-
 using complex = std::complex<float>;
 
 namespace DMA::FFT {
+	/// <summary>
+	/// The size of the twiddle factor table
+	/// </summary>
+	constexpr auto TWIDDLE_SIZE = 2048;
+
 	/// <summary>
 	/// Precomputed twiddle factors
 	/// </summary>
