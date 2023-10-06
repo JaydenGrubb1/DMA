@@ -3,23 +3,28 @@
 
 #include "core.h"
 #include "fft.h"
+#include "wav.h"
 
-void DMA::Test(void) {
-	printf("Executing DMA-Core::Test()\n");
+namespace DMA {
+	void Test(void) {
+		printf("Executing DMA-Core::Test()\n");
 
-	std::vector<complex> in = { 4, 7, 2, 3 };
-	std::vector<complex> out(in.size());
+		Audio::WAV wav("../../sample.wav");
 
-	DMA::FFT::init();
-	DMA::FFT::stft(in, out);
+		std::vector<complex> in = { 4, 7, 2, 3 };
+		std::vector<complex> out(in.size());
 
-	printf("\nInput:\n");
-	for (auto c : in) {
-		printf("% .2f + % 2.2fi\n", c.real(), c.imag());
-	}
+		FFT::init();
+		FFT::stft(in, out);
 
-	printf("\nOutput:\n");
-	for (auto c : out) {
-		printf("% .2f + % 2.2fi\n", c.real(), c.imag());
+		printf("\nInput:\n");
+		for (auto c : in) {
+			printf("% .2f + % 2.2fi\n", c.real(), c.imag());
+		}
+
+		printf("\nOutput:\n");
+		for (auto c : out) {
+			printf("% .2f + % 2.2fi\n", c.real(), c.imag());
+		}
 	}
 }

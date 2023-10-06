@@ -24,12 +24,18 @@
     <ClInclude Include="conf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="wav.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="fft.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wav.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

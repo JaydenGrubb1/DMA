@@ -22,10 +22,12 @@
     <ClInclude Include="conf.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="fft.h" />
+    <ClInclude Include="wav.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core.cpp" />
     <ClCompile Include="fft.cpp" />
+    <ClCompile Include="wav.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
