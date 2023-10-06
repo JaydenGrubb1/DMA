@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <fstream>
 #include <vector>
 
 #include "core.h"
@@ -11,20 +12,33 @@ namespace DMA {
 
 		Audio::WAV wav("../../sample.wav");
 
-		std::vector<complex> in = { 4, 7, 2, 3 };
-		std::vector<complex> out(in.size());
+		auto num_samples = wav.size() / wav.sample_size();
+		std::vector<complex> in(num_samples);
+		std::vector<complex> out(num_samples);
+
+		for (size_t i = 0; i < num_samples; i += wav.sample_size()) {
+			in[i] = complex((float)wav.data()[i], 0.0);
+		}
 
 		FFT::init();
 		FFT::stft(in, out);
 
-		printf("\nInput:\n");
-		for (auto c : in) {
-			printf("% .2f + % 2.2fi\n", c.real(), c.imag());
+		std::ofstream stream;
+		stream.open("../../output.csv");
+
+		std::vector<float> freq(out.size() / 2);
+		int chunks = out.size() / FFT::TWIDDLE_SIZE;
+		int chunk_size = FFT::TWIDDLE_SIZE / 2;
+
+		for (int i = 0; i < chunks; i++) {
+			for (int j = 0; j < chunk_size; j++) {
+				float magnitude = std::abs(out[i * FFT::TWIDDLE_SIZE + j]);
+				stream << magnitude << ",";
+				freq[i * chunk_size + j] = magnitude;
+			}
+			stream << "\n";
 		}
 
-		printf("\nOutput:\n");
-		for (auto c : out) {
-			printf("% .2f + % 2.2fi\n", c.real(), c.imag());
-		}
+		stream.close();
 	}
 }
