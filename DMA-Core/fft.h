@@ -10,12 +10,12 @@ namespace DMA::FFT {
 	/// <summary>
 	/// The size of the twiddle factor table
 	/// </summary>
-	constexpr auto TWIDDLE_SIZE = 2048;
+	constexpr auto WINDOW_SIZE = 2048;
 
 	/// <summary>
 	/// Precomputed twiddle factors
 	/// </summary>
-	static complex twiddles[TWIDDLE_SIZE];
+	static complex twiddles[WINDOW_SIZE];
 
 	/// <summary>
 	/// Initializes the FFT module

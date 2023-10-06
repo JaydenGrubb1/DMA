@@ -27,12 +27,12 @@ namespace DMA {
 		stream.open("../../output.csv");
 
 		std::vector<float> freq(out.size() / 2);
-		int chunks = out.size() / FFT::TWIDDLE_SIZE;
-		int chunk_size = FFT::TWIDDLE_SIZE / 2;
+		int chunks = out.size() / FFT::WINDOW_SIZE;
+		int chunk_size = FFT::WINDOW_SIZE / 2;
 
 		for (int i = 0; i < chunks; i++) {
 			for (int j = 0; j < chunk_size; j++) {
-				float magnitude = std::abs(out[i * FFT::TWIDDLE_SIZE + j]);
+				float magnitude = std::abs(out[i * FFT::WINDOW_SIZE + j]);
 				stream << magnitude << ",";
 				freq[i * chunk_size + j] = magnitude;
 			}

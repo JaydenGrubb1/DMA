@@ -5,8 +5,8 @@
 
 namespace DMA::FFT {
 	void init(void) {
-		for (int i = 0; i < TWIDDLE_SIZE; i++) {
-			float angle = 2 * M_PI * i / TWIDDLE_SIZE;
+		for (int i = 0; i < WINDOW_SIZE; i++) {
+			float angle = 2 * M_PI * i / WINDOW_SIZE;
 			twiddles[i] = std::polar(1.0f, -angle);
 		}
 	}
@@ -31,21 +31,21 @@ namespace DMA::FFT {
 		fft(odd, odd_out);
 
 		for (int i = 0; i < in.size() / 2; i++) {
-			complex t = twiddles[i * TWIDDLE_SIZE / in.size()] * odd_out[i];
+			complex t = twiddles[i * WINDOW_SIZE / in.size()] * odd_out[i];
 			out[i] = even_out[i] + t;
 			out[i + in.size() / 2] = even_out[i] - t;
 		}
 	}
 
 	void stft(std::vector<complex>& in, std::vector<complex>& out) {
-		int sz = ceil((double)in.size() / TWIDDLE_SIZE) * TWIDDLE_SIZE;
+		int sz = ceil((double)in.size() / WINDOW_SIZE) * WINDOW_SIZE;
 		in.resize(sz, 0);
 		out.resize(sz);
 
 		// TODO: Parallelize this loop
-		for (int i = 0; i < sz; i += TWIDDLE_SIZE) {
-			std::span<complex> fft_in(in.data() + i, TWIDDLE_SIZE);
-			std::span<complex> fft_out(out.data() + i, TWIDDLE_SIZE);
+		for (int i = 0; i < sz; i += WINDOW_SIZE) {
+			std::span<complex> fft_in(in.data() + i, WINDOW_SIZE);
+			std::span<complex> fft_out(out.data() + i, WINDOW_SIZE);
 
 			fft(fft_in, fft_out);
 		}
