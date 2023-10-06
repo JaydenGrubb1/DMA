@@ -2,6 +2,7 @@
 
 #include <complex>
 #include <span>
+#include <vector>
 
 #include "conf.h"
 
@@ -19,9 +20,16 @@ namespace DMA::FFT {
 	void init(void);
 
 	/// <summary>
-	/// Computes the FFT of the input buffer and stores the result in the output buffer
+	/// Computes the FFT (Fast Fourier Transform) of the given data
 	/// </summary>
 	/// <param name="in">The input buffer</param>
 	/// <param name="out">The output buffer</param>
 	void fft(std::span<complex> in, std::span<complex> out);
+
+	/// <summary>
+	///	Computes the STFT (Short Time Fourier Transform) of the give data
+	/// </summary>
+	/// <param name="in">The input buffer</param>
+	/// <param name="out">The output buffer</param>
+	void stft(std::vector<complex>& in, std::vector<complex>& out);
 }
