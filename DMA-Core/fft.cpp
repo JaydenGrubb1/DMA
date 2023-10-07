@@ -1,5 +1,7 @@
+#define _USE_PARALLEL_STFT
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <thread>
 
 #include "fft.h"
 
@@ -38,17 +40,44 @@ namespace DMA::FFT {
 	}
 
 	void stft(std::vector<complex>& in, std::vector<complex>& out) {
-		int sz = ceil((double)in.size() / WINDOW_SIZE) * WINDOW_SIZE;
-		in.resize(sz, 0);
-		out.resize(sz);
+		int window_count = ceil((double)in.size() / WINDOW_SIZE);
+		int total_samples = window_count * WINDOW_SIZE;
+		in.resize(total_samples, 0);
+		out.resize(total_samples);
 
-		// TODO: Parallelize this loop
-		for (int i = 0; i < sz; i += WINDOW_SIZE) {
+#ifdef _USE_PARALLEL_STFT
+		std::vector<std::thread> threads;
+		int num_threads = std::thread::hardware_concurrency();
+		int thread_window_count = ceil((double)window_count / num_threads);
+
+		for (int i = 0; i < num_threads; i++) {
+			threads.push_back(std::thread([i, thread_window_count, window_count, &in, &out]() {
+				for (int j = 0; j < thread_window_count; j++) {
+					int window_index = i * thread_window_count + j;
+					if (window_index >= window_count) {
+						break;
+					}
+
+					int start = window_index * WINDOW_SIZE;
+					std::span<complex> fft_in(in.data() + start, WINDOW_SIZE);
+					std::span<complex> fft_out(out.data() + start, WINDOW_SIZE);
+
+					fft(fft_in, fft_out);
+				}}
+			));
+		}
+
+		for (auto& thread : threads) {
+			thread.join();
+		}
+#else
+		for (int i = 0; i < total_samples; i += WINDOW_SIZE) {
 			std::span<complex> fft_in(in.data() + i, WINDOW_SIZE);
 			std::span<complex> fft_out(out.data() + i, WINDOW_SIZE);
 
 			fft(fft_in, fft_out);
 		}
+#endif
 
 		// TODO: Normalize the output ???
 		// TODO: Multiply by a window function (gausian, hamming, etc) ???
