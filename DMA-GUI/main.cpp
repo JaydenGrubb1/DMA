@@ -1,9 +1,14 @@
+#include <cstdlib>
+#include <d3d11.h>
+#include <tchar.h>
+
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_win32.h"
 #include "ImGui/imgui_impl_dx11.h"
-#include <d3d11.h>
-#include <tchar.h>
-#include <cstdlib>
+
+constexpr int WIDTH = 1280;
+constexpr int HEIGHT = 800;
+constexpr int TITLEBAR_HEIGHT = 20;
 
 static ID3D11Device* d3d_device = nullptr;
 static ID3D11DeviceContext* d3d_device_context = nullptr;
@@ -11,6 +16,7 @@ static IDXGISwapChain* dxgi_swapchain = nullptr;
 static UINT resize_width = 0;
 static UINT resize_height = 0;
 static ID3D11RenderTargetView* render_target = nullptr;
+static POINTS window_pos;
 
 bool create_device_d3d(HWND hWnd);
 void cleanup_device_d3d();
@@ -22,51 +28,40 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	ImGui_ImplWin32_EnableDpiAwareness();
 	WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
 	::RegisterClassExW(&wc);
-	HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Digital Music Analyzer", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
+	HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Digital Music Analyzer", WS_POPUP, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
 
-	// Initialize Direct3D
 	if (!create_device_d3d(hwnd)) {
 		cleanup_device_d3d();
 		::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 		return EXIT_FAILURE;
 	}
 
-	// Show window
 	::ShowWindow(hwnd, SW_SHOWDEFAULT);
 	::UpdateWindow(hwnd);
 
-	// Intialize ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.IniFilename = nullptr;
 	io.LogFilename = nullptr;
 
-	// Configure ImGui style
 	ImGui::StyleColorsDark();
-	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-	//ImGui::StyleColorsLight();
+	//io.Fonts->AddFontFromFileTTF("resources/fonts/font.ttf", 28.0f);
 
-	// Initialize renderer backends
 	ImGui_ImplWin32_Init(hwnd);
 	ImGui_ImplDX11_Init(d3d_device, d3d_device_context);
 
-	// Main loop
-	bool done = false;
-	while (!done) {
+	bool running = true;
+	while (running) {
 		MSG msg;
 		while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE)) {
 			::TranslateMessage(&msg);
 			::DispatchMessage(&msg);
 			if (msg.message == WM_QUIT)
-				done = true;
+				running = false;
 		}
 
-		if (done)
-			break;
-
-		// Handle window resize
 		if (resize_width != 0 && resize_height != 0) {
 			cleanup_render_target();
 			dxgi_swapchain->ResizeBuffers(0, resize_width, resize_height, DXGI_FORMAT_UNKNOWN, 0);
@@ -74,21 +69,29 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			create_render_target();
 		}
 
-		// Start GUI frame
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		// TODO: Add actual GUI here
-		ImGui::ShowDemoWindow(nullptr);
+		ImGui::SetNextWindowPos({ 0,0 });
+		ImGui::SetNextWindowSize({ WIDTH, HEIGHT });
+		ImGui::Begin(
+			"Digital Music Analyzer",
+			&running,
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_NoMove |
+			ImGuiWindowFlags_NoCollapse |
+			ImGuiWindowFlags_NoBringToFrontOnFocus |
+			ImGuiWindowFlags_NoNavFocus
+		);
 
-		// Render GUI
+		ImGui::Button("Hello, world!");
+
+		ImGui::End();
+
 		ImGui::Render();
-		const float clear_color[4] = { 0.45f, 0.55f, 0.60f, 1.00f };
 		d3d_device_context->OMSetRenderTargets(1, &render_target, nullptr);
-		d3d_device_context->ClearRenderTargetView(render_target, clear_color);
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
 		dxgi_swapchain->Present(1, 0);
 	}
 
@@ -104,28 +107,28 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 }
 
 bool create_device_d3d(HWND hWnd) {
-	DXGI_SWAP_CHAIN_DESC sd;
-	ZeroMemory(&sd, sizeof(sd));
-	sd.BufferCount = 2;
-	sd.BufferDesc.Width = 0;
-	sd.BufferDesc.Height = 0;
-	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	sd.BufferDesc.RefreshRate.Numerator = 60;
-	sd.BufferDesc.RefreshRate.Denominator = 1;
-	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.OutputWindow = hWnd;
-	sd.SampleDesc.Count = 1;
-	sd.SampleDesc.Quality = 0;
-	sd.Windowed = TRUE;
-	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	DXGI_SWAP_CHAIN_DESC dxgi;
+	ZeroMemory(&dxgi, sizeof(dxgi));
+	dxgi.BufferCount = 2;
+	dxgi.BufferDesc.Width = 0;
+	dxgi.BufferDesc.Height = 0;
+	dxgi.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	dxgi.BufferDesc.RefreshRate.Numerator = 60;
+	dxgi.BufferDesc.RefreshRate.Denominator = 1;
+	dxgi.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+	dxgi.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	dxgi.OutputWindow = hWnd;
+	dxgi.SampleDesc.Count = 1;
+	dxgi.SampleDesc.Quality = 0;
+	dxgi.Windowed = TRUE;
+	dxgi.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
 	UINT create_device_flags = 0;
 	D3D_FEATURE_LEVEL feature_level;
 	const D3D_FEATURE_LEVEL feature_level_array[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
-	HRESULT res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, create_device_flags, feature_level_array, 2, D3D11_SDK_VERSION, &sd, &dxgi_swapchain, &d3d_device, &feature_level, &d3d_device_context);
+	HRESULT res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, create_device_flags, feature_level_array, 2, D3D11_SDK_VERSION, &dxgi, &dxgi_swapchain, &d3d_device, &feature_level, &d3d_device_context);
 	if (res == DXGI_ERROR_UNSUPPORTED)
-		res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, create_device_flags, feature_level_array, 2, D3D11_SDK_VERSION, &sd, &dxgi_swapchain, &d3d_device, &feature_level, &d3d_device_context);
+		res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, create_device_flags, feature_level_array, 2, D3D11_SDK_VERSION, &dxgi, &dxgi_swapchain, &d3d_device, &feature_level, &d3d_device_context);
 	if (res != S_OK)
 		return false;
 
@@ -185,6 +188,32 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		break;
 	case WM_DESTROY:
 		::PostQuitMessage(0);
+		return 0;
+	case WM_LBUTTONDOWN:
+		window_pos = MAKEPOINTS(lParam);
+		return 0;
+	case WM_MOUSEMOVE:
+		if (wParam == MK_LBUTTON) {
+			const auto points = MAKEPOINTS(lParam);
+			auto rect = ::RECT{};
+			::GetWindowRect(hWnd, &rect);
+			rect.left += points.x - window_pos.x;
+			rect.top += points.y - window_pos.y;
+
+			if (window_pos.x >= 0 &&
+				window_pos.x <= WIDTH &&
+				window_pos.y >= 0 &&
+				window_pos.y <= TITLEBAR_HEIGHT) {
+				SetWindowPos(
+					hWnd,
+					HWND_TOPMOST,
+					rect.left,
+					rect.top,
+					0, 0,
+					SWP_NOSIZE | SWP_SHOWWINDOW | SWP_NOZORDER
+				);
+			}
+		}
 		return 0;
 	}
 
