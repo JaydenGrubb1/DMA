@@ -1,6 +1,8 @@
 #include <d3d11.h>
 #include <tchar.h>
 
+#include <iostream>
+
 #include "gui.h"
 #include "ImGui/imgui_impl_win32.h"
 #include "ImGui/imgui_impl_dx11.h"
@@ -49,8 +51,8 @@ namespace DMA::GUI {
 			WS_POPUP,	// WS_OVERLAPPEDWINDOW
 			100,
 			100,
-			1280,
-			800,
+			WIDTH,
+			HEIGHT,
 			nullptr,
 			nullptr,
 			window_class.hInstance,
@@ -70,12 +72,18 @@ namespace DMA::GUI {
 		ImGui::CreateContext();
 		ImPlot::CreateContext();
 		ImGuiIO& io = ImGui::GetIO();
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_ViewportsEnable;
+		io.ConfigWindowsMoveFromTitleBarOnly = true;
 		io.IniFilename = nullptr;
 		io.LogFilename = nullptr;
 
 		ImGui::StyleColorsDark();
 		io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 20.0f);
+
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+		}
 
 		ImGui_ImplWin32_Init(window_handle);
 		ImGui_ImplDX11_Init(d3d_device, d3d_device_context);
@@ -103,14 +111,20 @@ namespace DMA::GUI {
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		ImGui::SetNextWindowPos({ 0,0 });
-		ImGui::SetNextWindowSize({ WIDTH, HEIGHT });
+		ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
+		ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
 	}
 
 	void render_end(void) {
 		ImGui::Render();
 		d3d_device_context->OMSetRenderTargets(1, &render_target, nullptr);
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+		}
+
 		dxgi_swapchain->Present(1, 0);
 	}
 
