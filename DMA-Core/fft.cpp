@@ -6,6 +6,8 @@
 #include "fft.h"
 
 namespace DMA::FFT {
+	static complex twiddles[WINDOW_SIZE];
+
 	void init(void) {
 		for (int i = 0; i < WINDOW_SIZE; i++) {
 			float angle = 2 * M_PI * i / WINDOW_SIZE;

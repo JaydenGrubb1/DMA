@@ -8,14 +8,9 @@ using complex = std::complex<float>;
 
 namespace DMA::FFT {
 	/// <summary>
-	/// The size of the twiddle factor table
+	/// The size of the FFT window
 	/// </summary>
 	constexpr auto WINDOW_SIZE = 2048;
-
-	/// <summary>
-	/// Precomputed twiddle factors
-	/// </summary>
-	static complex twiddles[WINDOW_SIZE];
 
 	/// <summary>
 	/// Initializes the FFT module
