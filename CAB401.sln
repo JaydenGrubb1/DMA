@@ -10,6 +10,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DMA-CLI", "DMA-CLI\DMA-CLI.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DMA-Core", "DMA-Core\DMA-Core.vcxproj", "{B0BA5EFC-FF3B-4967-9A89-5B42500F4510}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DMA-GUI", "DMA-GUI\DMA-GUI.vcxproj", "{894B985F-605D-45FD-B758-0983CA7CA369}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B0BA5EFC-FF3B-4967-9A89-5B42500F4510} = {B0BA5EFC-FF3B-4967-9A89-5B42500F4510}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -34,6 +39,14 @@ Global
 		{B0BA5EFC-FF3B-4967-9A89-5B42500F4510}.Release|x64.Build.0 = Release|x64
 		{B0BA5EFC-FF3B-4967-9A89-5B42500F4510}.Release|x86.ActiveCfg = Release|Win32
 		{B0BA5EFC-FF3B-4967-9A89-5B42500F4510}.Release|x86.Build.0 = Release|Win32
+		{894B985F-605D-45FD-B758-0983CA7CA369}.Debug|x64.ActiveCfg = Debug|x64
+		{894B985F-605D-45FD-B758-0983CA7CA369}.Debug|x64.Build.0 = Debug|x64
+		{894B985F-605D-45FD-B758-0983CA7CA369}.Debug|x86.ActiveCfg = Debug|Win32
+		{894B985F-605D-45FD-B758-0983CA7CA369}.Debug|x86.Build.0 = Debug|Win32
+		{894B985F-605D-45FD-B758-0983CA7CA369}.Release|x64.ActiveCfg = Release|x64
+		{894B985F-605D-45FD-B758-0983CA7CA369}.Release|x64.Build.0 = Release|x64
+		{894B985F-605D-45FD-B758-0983CA7CA369}.Release|x86.ActiveCfg = Release|Win32
+		{894B985F-605D-45FD-B758-0983CA7CA369}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
