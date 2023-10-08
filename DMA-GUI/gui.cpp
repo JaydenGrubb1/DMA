@@ -7,7 +7,7 @@
 
 constexpr auto WIDTH = 1280;
 constexpr auto HEIGHT = 800;
-constexpr auto TITLEBAR_HEIGHT = 34;
+constexpr auto TITLEBAR_HEIGHT = 26;
 
 static ID3D11Device* d3d_device = nullptr;
 static ID3D11DeviceContext* d3d_device_context = nullptr;
@@ -68,13 +68,14 @@ namespace DMA::GUI {
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
+		ImPlot::CreateContext();
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.IniFilename = nullptr;
 		io.LogFilename = nullptr;
 
 		ImGui::StyleColorsDark();
-		io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 28.0f);
+		io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 20.0f);
 
 		ImGui_ImplWin32_Init(window_handle);
 		ImGui_ImplDX11_Init(d3d_device, d3d_device_context);
@@ -116,6 +117,7 @@ namespace DMA::GUI {
 	void cleanup(void) {
 		ImGui_ImplDX11_Shutdown();
 		ImGui_ImplWin32_Shutdown();
+		ImPlot::DestroyContext();
 		ImGui::DestroyContext();
 
 		cleanup_device_d3d();
