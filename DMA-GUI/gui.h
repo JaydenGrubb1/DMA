@@ -22,8 +22,9 @@ namespace DMA::GUI {
 	/// <summary>
 	/// Initializes the GUI
 	/// </summary>
+	/// <param name="title">The title of the main window</param>
 	/// <returns>True if the GUI was initialized successfully, false otherwise</returns>
-	bool init(void);
+	bool init(LPCWSTR title);
 
 	/// <summary>
 	/// Starts the GUI render loop

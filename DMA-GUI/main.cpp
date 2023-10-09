@@ -6,7 +6,7 @@
 using namespace DMA;
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd) {
-	if (!GUI::init()) {
+	if (!GUI::init(L"Digital Music Analyzer")) {
 		return EXIT_FAILURE;
 	}
 

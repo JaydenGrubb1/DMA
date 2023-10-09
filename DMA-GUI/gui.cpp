@@ -28,7 +28,7 @@ void cleanup_render_target();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace DMA::GUI {
-	bool init(void) {
+	bool init(LPCWSTR title) {
 		ImGui_ImplWin32_EnableDpiAwareness();
 
 		window_class.cbSize = sizeof(WNDCLASSEXW);
@@ -41,13 +41,13 @@ namespace DMA::GUI {
 		window_class.hCursor = nullptr;
 		window_class.hbrBackground = nullptr;
 		window_class.lpszMenuName = nullptr;
-		window_class.lpszClassName = L"Digital Music Analyzer";
+		window_class.lpszClassName = title;
 		window_class.hIconSm = nullptr;
 		::RegisterClassExW(&window_class);
 
 		window_handle = ::CreateWindowW(
 			window_class.lpszClassName,
-			L"Digital Music Analyzer",
+			title,
 			WS_POPUP,	// WS_OVERLAPPEDWINDOW
 			100,
 			100,
