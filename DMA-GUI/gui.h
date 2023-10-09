@@ -41,4 +41,13 @@ namespace DMA::GUI {
 	/// Cleans up the GUI
 	/// </summary>
 	void destroy(void);
+
+	/// <summary>
+	/// Creates an open file dialogue
+	/// </summary>
+	/// <param name="file_name">Pointer to the file name buffer</param>
+	/// <param name="file_name_length">The length of the file name buffer</param>
+	/// <param name="filter">The file filter</param>
+	/// <returns>True if a file was selected, false otherwise</returns>
+	bool open_file(LPWSTR file_name, DWORD file_name_length, LPCWSTR filter);
 }

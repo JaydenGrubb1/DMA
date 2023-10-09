@@ -143,6 +143,24 @@ namespace DMA::GUI {
 		::DestroyWindow(window_handle);
 		::UnregisterClassW(window_class.lpszClassName, window_class.hInstance);
 	}
+
+	bool open_file(LPWSTR file_name, DWORD file_name_length, LPCWSTR filter) {
+		OPENFILENAMEW ofn;
+
+		ZeroMemory(&ofn, sizeof(ofn));
+		ofn.lStructSize = sizeof(ofn);
+		ofn.hwndOwner = window_handle;
+		ofn.lpstrFile = file_name;
+		ofn.nMaxFile = file_name_length;
+		ofn.lpstrFilter = filter;
+		ofn.nFilterIndex = 1;
+		ofn.lpstrFileTitle = nullptr;
+		ofn.nMaxFileTitle = 0;
+		ofn.lpstrInitialDir = nullptr;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+		return GetOpenFileName(&ofn);
+	}
 }
 
 bool create_device_d3d(HWND hWnd) {
