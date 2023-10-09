@@ -91,7 +91,7 @@ namespace DMA::GUI {
 		return true;
 	}
 
-	void render_start(void) {
+	void begin(void) {
 		MSG msg;
 		while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE)) {
 			::TranslateMessage(&msg);
@@ -115,7 +115,7 @@ namespace DMA::GUI {
 		ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
 	}
 
-	void render_end(void) {
+	void end(void) {
 		ImGui::Render();
 		d3d_device_context->OMSetRenderTargets(1, &render_target, nullptr);
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -128,7 +128,7 @@ namespace DMA::GUI {
 		dxgi_swapchain->Present(1, 0);
 	}
 
-	void cleanup(void) {
+	void destroy(void) {
 		ImGui_ImplDX11_Shutdown();
 		ImGui_ImplWin32_Shutdown();
 		ImPlot::DestroyContext();

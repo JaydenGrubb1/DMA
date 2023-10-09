@@ -29,15 +29,15 @@ namespace DMA::GUI {
 	/// <summary>
 	/// Starts the GUI render loop
 	/// </summary>
-	void render_start(void);
+	void begin(void);
 
 	/// <summary>
 	/// Ends the GUI render loop
 	/// </summary>
-	void render_end(void);
+	void end(void);
 
 	/// <summary>
 	/// Cleans up the GUI
 	/// </summary>
-	void cleanup(void);
+	void destroy(void);
 }
