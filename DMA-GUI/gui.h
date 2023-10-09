@@ -29,7 +29,8 @@ namespace DMA::GUI {
 	/// <summary>
 	/// Starts the GUI render loop
 	/// </summary>
-	void begin(void);
+	/// <returns>True if the GUI render loop should continue, false otherwise</returns>
+	bool begin(void);
 
 	/// <summary>
 	/// Ends the GUI render loop

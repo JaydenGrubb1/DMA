@@ -91,7 +91,7 @@ namespace DMA::GUI {
 		return true;
 	}
 
-	void begin(void) {
+	bool begin(void) {
 		MSG msg;
 		while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE)) {
 			::TranslateMessage(&msg);
@@ -99,6 +99,9 @@ namespace DMA::GUI {
 			if (msg.message == WM_QUIT)
 				is_active = false;
 		}
+
+		if (!is_active)
+			return false;
 
 		if (resize_width != 0 && resize_height != 0) {
 			cleanup_render_target();
@@ -113,6 +116,8 @@ namespace DMA::GUI {
 
 		ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos);
 		ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
+
+		return true;
 	}
 
 	void end(void) {

@@ -11,7 +11,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	}
 
 	while (GUI::is_active) {
-		GUI::begin();
+		if (!GUI::begin())
+			break;
+
 		ImGui::Begin("Digital Music Analyzer", &GUI::is_active, GUI::WINDOW_FLAGS);
 
 		ImGui::Button("Hello, world!");
