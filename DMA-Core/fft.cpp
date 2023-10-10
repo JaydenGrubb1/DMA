@@ -1,4 +1,5 @@
 #define _USE_PARALLEL_STFT
+#define _USE_ITERATIVE_FFT
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <thread>
@@ -8,6 +9,18 @@
 namespace DMA::FFT {
 	static complex twiddles[WINDOW_SIZE];
 
+#ifdef _USE_ITERATIVE_FFT
+	static int __bit_reverse(int x, int log2n) {
+		int n = 0;
+		for (int i = 0; i < log2n; i++) {
+			n <<= 1;
+			n |= (x & 1);
+			x >>= 1;
+		}
+		return n;
+	}
+#endif
+
 	void init(void) {
 		for (int i = 0; i < WINDOW_SIZE; i++) {
 			float angle = 2 * M_PI * i / WINDOW_SIZE;
@@ -16,6 +29,30 @@ namespace DMA::FFT {
 	}
 
 	void fft(std::span<complex> in, std::span<complex> out) {
+#ifdef _USE_ITERATIVE_FFT
+		int log2n = log2(in.size());
+
+		for (int i = 0; i < in.size(); i++) {
+			int rev = __bit_reverse(i, log2n);
+			out[i] = in[rev];
+		}
+
+		for (int i = 1; i <= log2n; i++) {
+			int m = 1 << i;	// 2^i
+			int n = m >> 1;	// m/2
+
+			for (int j = 0; j < n; j++) {
+				for (int k = j; k < in.size(); k += m) {
+					complex w = twiddles[j * WINDOW_SIZE / m];
+					complex t = out[k + n] * w;
+					complex u = out[k];
+
+					out[k] = u + t;
+					out[k + n] = u - t;
+				}
+			}
+		}
+#else
 		if (in.size() == 1) {
 			out[0] = in[0];
 			return;
@@ -39,6 +76,7 @@ namespace DMA::FFT {
 			out[i] = even_out[i] + t;
 			out[i + in.size() / 2] = even_out[i] - t;
 		}
+#endif
 	}
 
 	void stft(std::vector<complex>& in, std::vector<complex>& out) {
