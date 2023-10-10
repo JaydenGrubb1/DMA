@@ -86,9 +86,10 @@ namespace DMA::FFT {
 		out.resize(total_samples);
 
 #ifdef _USE_PARALLEL_STFT
-		std::vector<std::thread> threads;
 		int num_threads = std::thread::hardware_concurrency();
 		int thread_window_count = ceil((double)window_count / num_threads);
+		std::vector<std::thread> threads;
+		threads.reserve(num_threads);
 
 		for (int i = 0; i < num_threads; i++) {
 			threads.push_back(std::thread([i, thread_window_count, window_count, &in, &out]() {
