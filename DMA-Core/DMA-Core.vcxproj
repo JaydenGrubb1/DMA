@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="comp.h" />
     <ClInclude Include="fft.h" />
     <ClInclude Include="wav.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="comp.cpp" />
     <ClCompile Include="fft.cpp" />
     <ClCompile Include="wav.cpp" />
   </ItemGroup>

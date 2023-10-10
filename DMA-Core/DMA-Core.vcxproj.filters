@@ -21,12 +21,18 @@
     <ClInclude Include="wav.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="comp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="fft.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="wav.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="comp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

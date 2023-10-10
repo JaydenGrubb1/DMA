@@ -11,7 +11,7 @@ namespace DMA::FFT {
 	void init(void) {
 		for (int i = 0; i < WINDOW_SIZE; i++) {
 			float angle = 2 * M_PI * i / WINDOW_SIZE;
-			twiddles[i] = std::polar(1.0f, -angle);
+			twiddles[i] = { cos(angle), -sin(angle) };
 		}
 	}
 
@@ -44,7 +44,7 @@ namespace DMA::FFT {
 	void stft(std::vector<complex>& in, std::vector<complex>& out) {
 		int window_count = ceil((double)in.size() / WINDOW_SIZE);
 		int total_samples = window_count * WINDOW_SIZE;
-		in.resize(total_samples, 0);
+		in.resize(total_samples, { 0,0 });
 		out.resize(total_samples);
 
 #ifdef _USE_PARALLEL_STFT

@@ -1,10 +1,9 @@
 #pragma once
 
-#include <complex>
 #include <span>
 #include <vector>
 
-using complex = std::complex<float>;
+#include "comp.h"
 
 namespace DMA::FFT {
 	/// <summary>
