@@ -38,17 +38,16 @@ namespace DMA::FFT {
 		}
 
 		for (int i = 1; i <= log2n; i++) {
-			int m = 1 << i;	// 2^i
-			int n = m >> 1;	// m/2
+			int size = 1 << i;	// 2^i
 
-			for (int j = 0; j < n; j++) {
-				for (int k = j; k < in.size(); k += m) {
-					complex w = twiddles[j * WINDOW_SIZE / m];
-					complex t = out[k + n] * w;
+			for (int j = 0; j < size / 2; j++) {
+				for (int k = j; k < in.size(); k += size) {
+					complex w = twiddles[j * WINDOW_SIZE / size];
+					complex t = out[k + size / 2] * w;
 					complex u = out[k];
 
 					out[k] = u + t;
-					out[k + n] = u - t;
+					out[k + size / 2] = u - t;
 				}
 			}
 		}
