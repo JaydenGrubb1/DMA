@@ -22,6 +22,15 @@
     <Filter Include="ImGui\Source Files">
       <UniqueIdentifier>{18e5d8dc-b9e6-45d7-a80e-43ba4d6519e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ImPlot">
+      <UniqueIdentifier>{2c7c239f-0ad0-4691-8263-955d6109bc3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImPlot\Source Files">
+      <UniqueIdentifier>{9d4c5680-6aea-4e5e-83b2-ed4a8fcdc774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImPlot\Header Files">
+      <UniqueIdentifier>{fc8a0ad3-8aae-440c-8d49-9a9f9f8209fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -51,6 +60,15 @@
     <ClCompile Include="gui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="implot\implot.cpp">
+      <Filter>ImPlot\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="implot\implot_demo.cpp">
+      <Filter>ImPlot\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="implot\implot_items.cpp">
+      <Filter>ImPlot\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -79,6 +97,12 @@
     </ClInclude>
     <ClInclude Include="gui.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="implot\implot.h">
+      <Filter>ImPlot\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="implot\implot_internal.h">
+      <Filter>ImPlot\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
