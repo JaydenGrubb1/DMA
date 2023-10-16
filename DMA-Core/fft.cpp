@@ -7,7 +7,7 @@
 #include "fft.h"
 
 namespace DMA::FFT {
-	static complex twiddles[WINDOW_SIZE];
+	static complex _twiddles[WINDOW_SIZE];
 
 #ifdef _USE_ITERATIVE_FFT
 	static int __bit_reverse(int x, int log2n) {
@@ -24,7 +24,7 @@ namespace DMA::FFT {
 	void init(void) {
 		for (int i = 0; i < WINDOW_SIZE; i++) {
 			float angle = 2 * M_PI * i / WINDOW_SIZE;
-			twiddles[i] = std::polar(1.0f, -angle);
+			_twiddles[i] = std::polar(1.0f, -angle);
 		}
 	}
 
@@ -42,7 +42,7 @@ namespace DMA::FFT {
 
 			for (int j = 0; j < size / 2; j++) {
 				for (int k = j; k < in.size(); k += size) {
-					complex w = twiddles[j * WINDOW_SIZE / size];
+					complex w = _twiddles[j * WINDOW_SIZE / size];
 					complex t = out[k + size / 2] * w;
 					complex u = out[k];
 

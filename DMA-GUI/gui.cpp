@@ -11,42 +11,42 @@ constexpr auto WIDTH = 1280;
 constexpr auto HEIGHT = 800;
 constexpr auto TITLEBAR_HEIGHT = 26;
 
-static ID3D11Device* d3d_device = nullptr;
-static ID3D11DeviceContext* d3d_device_context = nullptr;
-static IDXGISwapChain* dxgi_swapchain = nullptr;
-static UINT resize_width = 0;
-static UINT resize_height = 0;
-static ID3D11RenderTargetView* render_target = nullptr;
-static POINTS window_pos;
-static WNDCLASSEXW window_class;
-static HWND window_handle;
+static ID3D11Device* _d3d_device = nullptr;
+static ID3D11DeviceContext* _d3d_device_context = nullptr;
+static IDXGISwapChain* _dxgi_swapchain = nullptr;
+static UINT _resize_width = 0;
+static UINT _resize_height = 0;
+static ID3D11RenderTargetView* _render_target = nullptr;
+static POINTS _window_pos;
+static WNDCLASSEXW _window_class;
+static HWND _window_handle;
 
-bool create_device_d3d(HWND hWnd);
-void cleanup_device_d3d();
-void create_render_target();
-void cleanup_render_target();
+bool __create_device_d3d(HWND hWnd);
+void __cleanup_device_d3d();
+void __create_render_target();
+void __cleanup_render_target();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace DMA::GUI {
 	bool init(LPCWSTR title) {
 		ImGui_ImplWin32_EnableDpiAwareness();
 
-		window_class.cbSize = sizeof(WNDCLASSEXW);
-		window_class.style = CS_CLASSDC;
-		window_class.lpfnWndProc = WndProc;
-		window_class.cbClsExtra = 0L;
-		window_class.cbWndExtra = 0L;
-		window_class.hInstance = GetModuleHandle(nullptr);
-		window_class.hIcon = nullptr;
-		window_class.hCursor = nullptr;
-		window_class.hbrBackground = nullptr;
-		window_class.lpszMenuName = nullptr;
-		window_class.lpszClassName = title;
-		window_class.hIconSm = nullptr;
-		::RegisterClassExW(&window_class);
+		_window_class.cbSize = sizeof(WNDCLASSEXW);
+		_window_class.style = CS_CLASSDC;
+		_window_class.lpfnWndProc = WndProc;
+		_window_class.cbClsExtra = 0L;
+		_window_class.cbWndExtra = 0L;
+		_window_class.hInstance = GetModuleHandle(nullptr);
+		_window_class.hIcon = nullptr;
+		_window_class.hCursor = nullptr;
+		_window_class.hbrBackground = nullptr;
+		_window_class.lpszMenuName = nullptr;
+		_window_class.lpszClassName = title;
+		_window_class.hIconSm = nullptr;
+		::RegisterClassExW(&_window_class);
 
-		window_handle = ::CreateWindowW(
-			window_class.lpszClassName,
+		_window_handle = ::CreateWindowW(
+			_window_class.lpszClassName,
 			title,
 			WS_POPUP,	// WS_OVERLAPPEDWINDOW
 			100,
@@ -55,18 +55,18 @@ namespace DMA::GUI {
 			HEIGHT,
 			nullptr,
 			nullptr,
-			window_class.hInstance,
+			_window_class.hInstance,
 			nullptr
 		);
 
-		if (!create_device_d3d(window_handle)) {
-			cleanup_device_d3d();
-			::UnregisterClassW(window_class.lpszClassName, window_class.hInstance);
+		if (!__create_device_d3d(_window_handle)) {
+			__cleanup_device_d3d();
+			::UnregisterClassW(_window_class.lpszClassName, _window_class.hInstance);
 			return false;
 		}
 
-		::ShowWindow(window_handle, SW_SHOWDEFAULT);
-		::UpdateWindow(window_handle);
+		::ShowWindow(_window_handle, SW_SHOWDEFAULT);
+		::UpdateWindow(_window_handle);
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -85,8 +85,8 @@ namespace DMA::GUI {
 			ImGui::RenderPlatformWindowsDefault();
 		}
 
-		ImGui_ImplWin32_Init(window_handle);
-		ImGui_ImplDX11_Init(d3d_device, d3d_device_context);
+		ImGui_ImplWin32_Init(_window_handle);
+		ImGui_ImplDX11_Init(_d3d_device, _d3d_device_context);
 
 		return true;
 	}
@@ -103,11 +103,11 @@ namespace DMA::GUI {
 		if (!is_active)
 			return false;
 
-		if (resize_width != 0 && resize_height != 0) {
-			cleanup_render_target();
-			dxgi_swapchain->ResizeBuffers(0, resize_width, resize_height, DXGI_FORMAT_UNKNOWN, 0);
-			resize_width = resize_height = 0;
-			create_render_target();
+		if (_resize_width != 0 && _resize_height != 0) {
+			__cleanup_render_target();
+			_dxgi_swapchain->ResizeBuffers(0, _resize_width, _resize_height, DXGI_FORMAT_UNKNOWN, 0);
+			_resize_width = _resize_height = 0;
+			__create_render_target();
 		}
 
 		ImGui_ImplDX11_NewFrame();
@@ -122,7 +122,7 @@ namespace DMA::GUI {
 
 	void end(void) {
 		ImGui::Render();
-		d3d_device_context->OMSetRenderTargets(1, &render_target, nullptr);
+		_d3d_device_context->OMSetRenderTargets(1, &_render_target, nullptr);
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
@@ -130,7 +130,7 @@ namespace DMA::GUI {
 			ImGui::RenderPlatformWindowsDefault();
 		}
 
-		dxgi_swapchain->Present(1, 0);
+		_dxgi_swapchain->Present(1, 0);
 	}
 
 	void destroy(void) {
@@ -139,9 +139,9 @@ namespace DMA::GUI {
 		ImPlot::DestroyContext();
 		ImGui::DestroyContext();
 
-		cleanup_device_d3d();
-		::DestroyWindow(window_handle);
-		::UnregisterClassW(window_class.lpszClassName, window_class.hInstance);
+		__cleanup_device_d3d();
+		::DestroyWindow(_window_handle);
+		::UnregisterClassW(_window_class.lpszClassName, _window_class.hInstance);
 	}
 
 	bool open_file(LPWSTR file_name, DWORD file_name_length, LPCWSTR filter) {
@@ -149,7 +149,7 @@ namespace DMA::GUI {
 
 		ZeroMemory(&ofn, sizeof(ofn));
 		ofn.lStructSize = sizeof(ofn);
-		ofn.hwndOwner = window_handle;
+		ofn.hwndOwner = _window_handle;
 		ofn.lpstrFile = file_name;
 		ofn.nMaxFile = file_name_length;
 		ofn.lpstrFilter = filter;
@@ -163,7 +163,7 @@ namespace DMA::GUI {
 	}
 }
 
-bool create_device_d3d(HWND hWnd) {
+bool __create_device_d3d(HWND hWnd) {
 	DXGI_SWAP_CHAIN_DESC dxgi;
 	ZeroMemory(&dxgi, sizeof(dxgi));
 	dxgi.BufferCount = 2;
@@ -183,46 +183,46 @@ bool create_device_d3d(HWND hWnd) {
 	UINT create_device_flags = 0;
 	D3D_FEATURE_LEVEL feature_level;
 	const D3D_FEATURE_LEVEL feature_level_array[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
-	HRESULT res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, create_device_flags, feature_level_array, 2, D3D11_SDK_VERSION, &dxgi, &dxgi_swapchain, &d3d_device, &feature_level, &d3d_device_context);
+	HRESULT res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, create_device_flags, feature_level_array, 2, D3D11_SDK_VERSION, &dxgi, &_dxgi_swapchain, &_d3d_device, &feature_level, &_d3d_device_context);
 	if (res == DXGI_ERROR_UNSUPPORTED)
-		res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, create_device_flags, feature_level_array, 2, D3D11_SDK_VERSION, &dxgi, &dxgi_swapchain, &d3d_device, &feature_level, &d3d_device_context);
+		res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, create_device_flags, feature_level_array, 2, D3D11_SDK_VERSION, &dxgi, &_dxgi_swapchain, &_d3d_device, &feature_level, &_d3d_device_context);
 	if (res != S_OK)
 		return false;
 
-	create_render_target();
+	__create_render_target();
 	return true;
 }
 
-void cleanup_device_d3d() {
-	cleanup_render_target();
-	if (dxgi_swapchain) {
-		dxgi_swapchain->Release();
-		dxgi_swapchain = nullptr;
+void __cleanup_device_d3d() {
+	__cleanup_render_target();
+	if (_dxgi_swapchain) {
+		_dxgi_swapchain->Release();
+		_dxgi_swapchain = nullptr;
 	}
-	if (d3d_device_context) {
-		d3d_device_context->Release();
-		d3d_device_context = nullptr;
+	if (_d3d_device_context) {
+		_d3d_device_context->Release();
+		_d3d_device_context = nullptr;
 	}
-	if (d3d_device) {
-		d3d_device->Release();
-		d3d_device = nullptr;
+	if (_d3d_device) {
+		_d3d_device->Release();
+		_d3d_device = nullptr;
 	}
 }
 
-void create_render_target() {
+void __create_render_target() {
 	ID3D11Texture2D* back_buffer;
-	dxgi_swapchain->GetBuffer(0, IID_PPV_ARGS(&back_buffer));
+	_dxgi_swapchain->GetBuffer(0, IID_PPV_ARGS(&back_buffer));
 
 	if (back_buffer) {
-		d3d_device->CreateRenderTargetView(back_buffer, nullptr, &render_target);
+		_d3d_device->CreateRenderTargetView(back_buffer, nullptr, &_render_target);
 		back_buffer->Release();
 	}
 }
 
-void cleanup_render_target() {
-	if (render_target) {
-		render_target->Release();
-		render_target = nullptr;
+void __cleanup_render_target() {
+	if (_render_target) {
+		_render_target->Release();
+		_render_target = nullptr;
 	}
 }
 
@@ -236,8 +236,8 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	case WM_SIZE:
 		if (wParam == SIZE_MINIMIZED)
 			return 0;
-		resize_width = (UINT)LOWORD(lParam);
-		resize_height = (UINT)HIWORD(lParam);
+		_resize_width = (UINT)LOWORD(lParam);
+		_resize_height = (UINT)HIWORD(lParam);
 		return 0;
 	case WM_SYSCOMMAND:
 		if ((wParam & 0xfff0) == SC_KEYMENU)
@@ -247,20 +247,20 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		::PostQuitMessage(0);
 		return 0;
 	case WM_LBUTTONDOWN:
-		window_pos = MAKEPOINTS(lParam);
+		_window_pos = MAKEPOINTS(lParam);
 		return 0;
 	case WM_MOUSEMOVE:
 		if (wParam == MK_LBUTTON) {
 			const auto points = MAKEPOINTS(lParam);
 			auto rect = ::RECT{};
 			::GetWindowRect(hWnd, &rect);
-			rect.left += points.x - window_pos.x;
-			rect.top += points.y - window_pos.y;
+			rect.left += points.x - _window_pos.x;
+			rect.top += points.y - _window_pos.y;
 
-			if (window_pos.x >= 0 &&
-				window_pos.x <= WIDTH &&
-				window_pos.y >= 0 &&
-				window_pos.y <= TITLEBAR_HEIGHT) {
+			if (_window_pos.x >= 0 &&
+				_window_pos.x <= WIDTH &&
+				_window_pos.y >= 0 &&
+				_window_pos.y <= TITLEBAR_HEIGHT) {
 				SetWindowPos(
 					hWnd,
 					HWND_TOPMOST,
