@@ -1,5 +1,10 @@
 #define _USE_PARALLEL_STFT
 #define _USE_ITERATIVE_FFT
+
+#ifndef _STFT_PARALLEL_SCALE
+#define _STFT_PARALLEL_SCALE 2
+#endif
+
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <thread>
@@ -85,7 +90,7 @@ namespace DMA::FFT {
 		out.resize(total_samples);
 
 #ifdef _USE_PARALLEL_STFT
-		int num_threads = std::thread::hardware_concurrency();
+		int num_threads = std::thread::hardware_concurrency() / _STFT_PARALLEL_SCALE;
 		int thread_window_count = ceil((double)window_count / num_threads);
 		std::vector<std::thread> threads;
 		threads.reserve(num_threads);
