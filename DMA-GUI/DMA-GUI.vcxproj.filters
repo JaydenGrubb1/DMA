@@ -104,5 +104,8 @@
     <ClInclude Include="implot\implot_internal.h">
       <Filter>ImPlot\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="spec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
