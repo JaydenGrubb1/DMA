@@ -20,10 +20,20 @@ namespace DMA::Audio {
 	class WAV {
 	public:
 		/// <summary>
+		/// Constructs an empty WAV object
+		/// </summary>
+		WAV() = default;
+
+		/// <summary>
 		/// Constructs a WAV object from the given file
 		/// </summary>
 		/// <param name="file">The file to read from</param>
-		WAV(const char* file);
+		WAV(const wchar_t* file);
+
+		/// <summary>
+		/// Assigns the WAV object from another WAV object
+		/// </summary>
+		WAV& operator=(WAV&& other) noexcept;
 
 		/// <summary>
 		/// Destroys the WAV object
@@ -35,6 +45,12 @@ namespace DMA::Audio {
 		/// </summary>
 		/// <returns>A pointer to the audio data</returns>
 		const char *data() const { return _data; }
+
+		/// <summary>
+		/// Returns the number of samples in the audio data
+		/// </summary>
+		/// <returns></returns>
+		size_t num_samples() const { return 8 * _header.data_chunk_size / _header.sample_size; }
 
 		/// <summary>
 		/// Returns the size of the audio data in bytes

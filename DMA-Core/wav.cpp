@@ -4,7 +4,7 @@
 #include "wav.h"
 
 namespace DMA::Audio {
-	WAV::WAV(const char* file) {
+	WAV::WAV(const wchar_t* file) {
 		std::ifstream stream;
 		stream.open(file, std::ios::binary);
 
@@ -21,6 +21,15 @@ namespace DMA::Audio {
 		// TODO: Normalize audio data ???
 
 		stream.close();
+	}
+
+	WAV& WAV::operator=(WAV&& other) noexcept {
+		if (this != &other) {
+			_header = other._header;
+			_data = other._data;
+			other._data = nullptr;
+		}
+		return *this;
 	}
 
 	WAV::~WAV() {
