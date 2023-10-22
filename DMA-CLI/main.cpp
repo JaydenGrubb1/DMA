@@ -1,3 +1,4 @@
+#include <chrono>
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
@@ -8,8 +9,10 @@
 
 using namespace DMA;
 
+constexpr auto ITERATIONS = 1000;
+
 int main(int argc, char** argv) {
-	Audio::WAV wav("../../sample.wav");
+	Audio::WAV wav(L"../../sample.wav");
 
 	auto num_samples = wav.size() / wav.sample_size();
 	std::vector<complex> in(num_samples);
@@ -20,7 +23,15 @@ int main(int argc, char** argv) {
 	}
 
 	FFT::init();
-	FFT::stft(in, out);
+
+	auto average = 0;
+	for (int i = 0; i < ITERATIONS; i++) {
+		auto start = std::chrono::high_resolution_clock::now();
+		FFT::stft(in, out);
+		auto end = std::chrono::high_resolution_clock::now();
+		average += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+	}
+	printf("Average time: %d microseconds\n", average / ITERATIONS);
 
 	std::ofstream stream;
 	stream.open("../../output.csv");
