@@ -25,6 +25,7 @@ namespace DMA::Audio {
 
 	WAV& WAV::operator=(WAV&& other) noexcept {
 		if (this != &other) {
+			delete[] _data;
 			_header = other._header;
 			_data = other._data;
 			other._data = nullptr;

@@ -70,7 +70,7 @@ namespace DMA::Audio {
 		/// <returns>The sampling rate of the audio data</returns>
 		uint32_t sample_rate() const { return _header.sample_rate; }
 	private:
-		WAVHeader _header;
-		char* _data;
+		WAVHeader _header = { 0 };
+		char* _data = nullptr;
 	};
 }
