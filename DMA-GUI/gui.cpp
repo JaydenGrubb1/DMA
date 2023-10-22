@@ -80,11 +80,6 @@ namespace DMA::GUI {
 		ImGui::StyleColorsDark();
 		io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 20.0f);
 
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-		}
-
 		ImGui_ImplWin32_Init(_window_handle);
 		ImGui_ImplDX11_Init(_d3d_device, _d3d_device_context);
 
