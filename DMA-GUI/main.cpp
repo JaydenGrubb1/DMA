@@ -50,32 +50,42 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 
 		if (freq.size() > 0) {
-			if (ImPlot::BeginPlot("Frequency Spectrum", ImVec2(-1, 0), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus)) {
-				ImPlot::PushColormap("Spectrum");
-				ImPlot::SetupAxisLimits(ImAxis_Y1, 0, DEFAULT_MAX_FREQ);
-				ImPlot::SetupAxisZoomConstraints(ImAxis_Y1, 0, DEFAULT_MAX_FREQ);
-				ImPlot::SetupAxisZoomConstraints(ImAxis_X1, 0, wav.num_samples() / wav.sample_rate());
-				ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, wav.sample_rate());
-				ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, wav.num_samples() / wav.sample_rate());
+			float duration = wav.num_samples() / wav.sample_rate();
 
-				ImPlot::PlotHeatmap("spec", freq.data(),
-					FFT::WINDOW_SIZE / 2,
-					freq.size() / (FFT::WINDOW_SIZE / 2),
-					0, 1, nullptr,
-					ImPlotPoint(0, wav.sample_rate()),
-					ImPlotPoint(wav.num_samples() / wav.sample_rate(), 0),
-					ImPlotHeatmapFlags_ColMajor
-				);
+			if (ImPlot::BeginSubplots("plots", 2, 1, ImVec2(-1, 728), ImPlotSubplotFlags_NoTitle | ImPlotSubplotFlags_LinkCols)) {
+				if (ImPlot::BeginPlot("Frequency Spectrum", ImVec2(-1, 0), ImPlotFlags_NoLegend)) {
+					ImPlot::PushColormap("Spectrum");
+					ImPlot::SetupAxisLimits(ImAxis_Y1, 0, DEFAULT_MAX_FREQ);
+					ImPlot::SetupAxisZoomConstraints(ImAxis_Y1, 0, DEFAULT_MAX_FREQ);
+					ImPlot::SetupAxisZoomConstraints(ImAxis_X1, 0, duration);
+					ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, wav.sample_rate());
+					ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, duration);
+					ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoTickLabels);
 
-				ImPlot::PopColormap();
-				ImPlot::EndPlot();
-			}
-		}
+					ImPlot::PlotHeatmap("spec", freq.data(),
+						FFT::WINDOW_SIZE / 2,
+						freq.size() / (FFT::WINDOW_SIZE / 2),
+						0, 1, nullptr,
+						ImPlotPoint(0, wav.sample_rate()),
+						ImPlotPoint((double)wav.num_samples() / wav.sample_rate(), 0),
+						ImPlotHeatmapFlags_ColMajor
+					);
 
-		if (hfc.size() > 0) {
-			if (ImPlot::BeginPlot("HFC", ImVec2(-1, 0), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus)) {
-				ImPlot::PlotLine("hfc", hfc.data(), hfc.size());
-				ImPlot::EndPlot();
+					ImPlot::PopColormap();
+					ImPlot::EndPlot();
+				}
+
+				if (ImPlot::BeginPlot("HFC", ImVec2(-1, 0), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus)) {
+					ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1);
+					ImPlot::SetupAxisZoomConstraints(ImAxis_Y1, 0, 1);
+					ImPlot::SetupAxisZoomConstraints(ImAxis_X1, 0, duration);
+					ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, 1);
+					ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, duration);
+
+					ImPlot::PlotLine("hfc", hfc.data(), hfc.size(), duration / hfc.size());
+					ImPlot::EndPlot();
+				}
+				ImPlot::EndSubplots();
 			}
 		}
 
