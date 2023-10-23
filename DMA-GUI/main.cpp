@@ -3,6 +3,7 @@
 
 #include "fft.h"
 #include "gui.h"
+#include "onset.h"
 #include "spec.h"
 #include "wav.h"
 
@@ -12,6 +13,7 @@ constexpr auto DEFAULT_MAX_FREQ = 6000;
 
 static Audio::WAV wav;
 static std::vector<float> freq;
+static std::vector<float> hfc;
 
 void analyze_audio(void);
 
@@ -70,6 +72,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			}
 		}
 
+		if (hfc.size() > 0) {
+			if (ImPlot::BeginPlot("HFC", ImVec2(-1, 0), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus)) {
+				ImPlot::PlotLine("hfc", hfc.data(), hfc.size());
+				ImPlot::EndPlot();
+			}
+		}
+
 		ImGui::End();
 		GUI::end();
 	}
@@ -88,4 +97,6 @@ void analyze_audio(void) {
 
 	FFT::stft(in, out);
 	FFT::format(out, freq);
+
+	Onset::detect(freq, hfc);
 }
