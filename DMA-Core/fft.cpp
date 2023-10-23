@@ -87,38 +87,33 @@ namespace DMA::FFT {
 		int window_count = ceil((double)in.size() / WINDOW_SIZE);
 		int total_samples = window_count * WINDOW_SIZE;
 		in.resize(total_samples, 0);
-		out.resize(total_samples);
+		out.resize(total_samples * WINDOW_OVERLAP);
 
 #ifdef _USE_PARALLEL_STFT
 		int num_threads = std::thread::hardware_concurrency() / _STFT_PARALLEL_SCALE;
-		int thread_window_count = ceil((double)window_count / num_threads);
+		int thread_samples = ceil((double)window_count / num_threads) * WINDOW_SIZE;
 		std::vector<std::thread> threads;
 		threads.reserve(num_threads);
 
 		for (int i = 0; i < num_threads; i++) {
-			threads.push_back(std::thread([i, thread_window_count, window_count, &in, &out]() {
-				for (int j = 0; j < thread_window_count; j++) {
-					int window_index = i * thread_window_count + j;
-					if (window_index >= window_count) {
-						break;
-					}
-
-					int start = window_index * WINDOW_SIZE;
-					std::span<complex> fft_in(in.data() + start, WINDOW_SIZE);
-					std::span<complex> fft_out(out.data() + start, WINDOW_SIZE);
-
+			int start = i * thread_samples;
+			int end = std::min(start + thread_samples, total_samples);
+			threads.emplace_back([&, start, end]() {
+				for (int i = start; i < end; i += WINDOW_SIZE / WINDOW_OVERLAP) {
+					std::span<complex> fft_in(in.data() + i, WINDOW_SIZE);
+					std::span<complex> fft_out(out.data() + i * WINDOW_OVERLAP, WINDOW_SIZE);
 					fft(fft_in, fft_out);
 				}}
-			));
+			);
 		}
 
 		for (auto& thread : threads) {
 			thread.join();
 		}
 #else
-		for (int i = 0; i < total_samples; i += WINDOW_SIZE) {
+		for (int i = 0; i < total_samples; i += WINDOW_SIZE / WINDOW_OVERLAP) {
 			std::span<complex> fft_in(in.data() + i, WINDOW_SIZE);
-			std::span<complex> fft_out(out.data() + i, WINDOW_SIZE);
+			std::span<complex> fft_out(out.data() + i * WINDOW_OVERLAP, WINDOW_SIZE);
 
 			fft(fft_in, fft_out);
 		}
@@ -126,7 +121,6 @@ namespace DMA::FFT {
 
 		// TODO: Normalize the output ???
 		// TODO: Multiply by a window function (gausian, hamming, etc) ???
-		// TODO: Overlap chunks ???
 		// TODO: Return only magnitude for positive frequencies ???
 	}
 }

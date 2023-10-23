@@ -13,6 +13,11 @@ namespace DMA::FFT {
 	constexpr auto WINDOW_SIZE = 2048;
 
 	/// <summary>
+	/// The overlap of the FFT window
+	/// </summary>
+	constexpr auto WINDOW_OVERLAP = 2;
+
+	/// <summary>
 	/// Initializes the FFT module
 	/// </summary>
 	void init(void);
