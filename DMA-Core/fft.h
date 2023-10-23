@@ -35,4 +35,11 @@ namespace DMA::FFT {
 	/// <param name="in">The input buffer</param>
 	/// <param name="out">The output buffer</param>
 	void stft(std::vector<complex>& in, std::vector<complex>& out);
+
+	/// <summary>
+	/// Formats the given complex data into a real-valued buffer
+	/// </summary>
+	/// <param name="in">The input buffer</param>
+	/// <param name="out">The output buffer</param>
+	void format(std::vector<complex>& in, std::vector<float>& out);
 }

@@ -119,8 +119,28 @@ namespace DMA::FFT {
 		}
 #endif
 
-		// TODO: Normalize the output ???
 		// TODO: Multiply by a window function (gausian, hamming, etc) ???
-		// TODO: Return only magnitude for positive frequencies ???
+	}
+
+	void format(std::vector<complex>& in, std::vector<float>& out) {
+		out.resize(in.size() / 2);
+		float max = 0.0f;
+
+		for (int i = 0; i < in.size() / FFT::WINDOW_SIZE; i++) {
+			for (int j = 1; j < FFT::WINDOW_SIZE / 2; j++) {
+				float magnitude = std::abs(in[i * FFT::WINDOW_SIZE + j]);
+				out[i * FFT::WINDOW_SIZE / 2 + j] = magnitude;
+
+				if (magnitude > max) {
+					max = magnitude;
+				}
+			}
+		}
+
+		for (int i = 0; i < in.size() / 2; i++) {
+			out[i] /= max;
+		}
+
+		// TODO: Parallelize this function ???
 	}
 }

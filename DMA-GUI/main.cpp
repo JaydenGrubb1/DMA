@@ -12,8 +12,6 @@ constexpr auto DEFAULT_MAX_FREQ = 6000;
 
 static Audio::WAV wav;
 static std::vector<float> freq;
-static int chunks;
-static int chunk_size;
 
 void analyze_audio(void);
 
@@ -58,7 +56,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 				ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, wav.sample_rate());
 				ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, wav.num_samples() / wav.sample_rate());
 
-				ImPlot::PlotHeatmap("spec", freq.data(), chunk_size, chunks, 0, 1, nullptr,
+				ImPlot::PlotHeatmap("spec", freq.data(),
+					FFT::WINDOW_SIZE / 2,
+					freq.size() / (FFT::WINDOW_SIZE / 2),
+					0, 1, nullptr,
 					ImPlotPoint(0, wav.sample_rate()),
 					ImPlotPoint(wav.num_samples() / wav.sample_rate(), 0),
 					ImPlotHeatmapFlags_ColMajor
@@ -86,24 +87,5 @@ void analyze_audio(void) {
 	}
 
 	FFT::stft(in, out);
-
-	freq.resize(out.size() / 2);
-	chunks = out.size() / FFT::WINDOW_SIZE;
-	chunk_size = FFT::WINDOW_SIZE / 2;
-	float max = 0.0f;
-
-	for (int i = 0; i < chunks; i++) {
-		for (int j = 1; j < chunk_size; j++) {
-			float magnitude = std::abs(out[i * FFT::WINDOW_SIZE + j]);
-			freq[i * chunk_size + j] = magnitude;
-
-			if (magnitude > max) {
-				max = magnitude;
-			}
-		}
-	}
-
-	for (int i = 0; i < out.size() / 2; i++) {
-		freq[i] /= max;
-	}
+	FFT::format(out, freq);
 }
