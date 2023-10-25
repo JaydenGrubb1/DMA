@@ -110,7 +110,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 							ImPlot::SetupAxisZoomConstraints(ImAxis_X1, 0, duration);
 							ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, 1);
 							ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, duration);
-
+							
 							ImPlot::PlotLine("##hfc", hfc.data(), hfc.size(), duration / hfc.size());
 							if (show_onsets) {
 								ImPlot::PlotInfLines("Onsets", start_times.data(), start_times.size());
@@ -128,7 +128,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			}
 		}
 		else {
-			// TODO: Prompt user to open audio file
+			std::string str = "Open an audio file to begin.";
+			ImVec2 text_size = ImGui::CalcTextSize(str.c_str());
+			ImVec2 available = ImGui::GetContentRegionAvail();
+			ImGui::SetCursorPos(ImVec2(available.x / 2 - text_size.x / 2, available.y / 2 - text_size.y / 2));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.3, 0.3, 0.3, 1.0));
+			ImGui::Text(str.c_str());
+			ImGui::PopStyleColor();
 		}
 
 		ImGui::End();
