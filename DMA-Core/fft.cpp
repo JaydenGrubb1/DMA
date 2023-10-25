@@ -84,7 +84,7 @@ namespace DMA::FFT {
 	}
 
 	void stft(std::vector<complex>& in, std::vector<complex>& out) {
-		int window_count = ceil((double)in.size() / WINDOW_SIZE);
+		int window_count = floor((double)in.size() / WINDOW_SIZE);
 		int total_samples = window_count * WINDOW_SIZE;
 		in.resize(total_samples, 0);
 		out.resize(total_samples * WINDOW_OVERLAP);
@@ -100,6 +100,9 @@ namespace DMA::FFT {
 			int end = std::min(start + thread_samples, total_samples);
 			threads.emplace_back([&, start, end]() {
 				for (int i = start; i < end; i += WINDOW_SIZE / WINDOW_OVERLAP) {
+					if (i + WINDOW_SIZE > total_samples) {
+						break;
+					}
 					std::span<complex> fft_in(in.data() + i, WINDOW_SIZE);
 					std::span<complex> fft_out(out.data() + i * WINDOW_OVERLAP, WINDOW_SIZE);
 					fft(fft_in, fft_out);
