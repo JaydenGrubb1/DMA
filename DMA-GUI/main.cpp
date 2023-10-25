@@ -53,7 +53,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			float duration = wav.num_samples() / wav.sample_rate();
 			static float ratios[] = { 2.0, 1.0 };
 
-			if (ImPlot::BeginSubplots("plots", 2, 1, ImVec2(-1, 728), ImPlotSubplotFlags_NoTitle | ImPlotSubplotFlags_LinkCols, ratios)) {
+			if (ImPlot::BeginSubplots("plots", 2, 1, ImVec2(-1, ImGui::GetContentRegionAvail().y), ImPlotSubplotFlags_NoTitle | ImPlotSubplotFlags_LinkCols, ratios)) {
 				if (ImPlot::BeginPlot("Frequency Spectrum", ImVec2(-1, 0), ImPlotFlags_NoLegend)) {
 					ImPlot::PushColormap("Spectrum");
 					ImPlot::SetupAxisLimits(ImAxis_Y1, 0, DEFAULT_MAX_FREQ);
