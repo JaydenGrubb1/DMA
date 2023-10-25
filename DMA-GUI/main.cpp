@@ -74,7 +74,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 					ImPlot::PlotHeatmap("spec", freq.data(),
 						FFT::WINDOW_SIZE / 2,
 						freq.size() / (FFT::WINDOW_SIZE / 2),
-						0, 1, nullptr,
+						0, 1.01, nullptr,
 						ImPlotPoint(0, wav.sample_rate()),
 						ImPlotPoint((double)wav.num_samples() / wav.sample_rate(), 0),
 						ImPlotHeatmapFlags_ColMajor
