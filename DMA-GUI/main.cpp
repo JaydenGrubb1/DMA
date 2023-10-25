@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <format>
 #include <Windows.h>
 
 #include "fft.h"
@@ -23,6 +24,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	}
 
 	ImPlot::AddColormap("Spectrum", spec_colormap, 256);
+	ImGuiIO& io = ImGui::GetIO();
 
 	FFT::init();
 
@@ -48,6 +50,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 				MessageBox(nullptr, file_name, L"File Name", MB_OK);
 			}
 		}
+
+		std::string fps = std::format("FPS: {:.0f} ({:.1f} ms)", io.Framerate, 1000.0f / io.Framerate);
+		ImGui::SameLine(ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize(fps.c_str()).x);
+		ImGui::Text(fps.c_str());
 
 		if (freq.size() > 0) {
 			float duration = wav.num_samples() / wav.sample_rate();
