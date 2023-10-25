@@ -111,13 +111,20 @@ void analyze_audio(void) {
 	std::vector<complex> out(wav.num_samples());
 
 	for (size_t i = 0; i < wav.num_samples(); i += wav.sample_size()) {
-		if (wav.sample_size() == 2) {
+		if (wav.sample_size() == 1) {
+			uint8_t sample = wav.data()[i];
+			in[i] = complex((float)sample, 0.0);
+		}
+		else if (wav.sample_size() == 2) {
 			uint16_t sample = wav.data()[i + 1] << 8 | wav.data()[i];
 			in[i] = complex((float)sample, 0.0);
 		}
-		else {
-			uint8_t sample = wav.data()[i];
+		else if (wav.sample_size() == 4) {
+			uint32_t sample = wav.data()[i + 3] << 24 | wav.data()[i + 2] << 16 | wav.data()[i + 1] << 8 | wav.data()[i];
 			in[i] = complex((float)sample, 0.0);
+		}
+		else {
+			throw std::runtime_error("Unsupported sample size");
 		}
 	}
 

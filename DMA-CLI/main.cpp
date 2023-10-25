@@ -19,7 +19,8 @@ int main(int argc, char** argv) {
 	std::vector<complex> out(num_samples);
 
 	for (size_t i = 0; i < num_samples; i += wav.sample_size()) {
-		in[i] = complex((float)wav.data()[i], 0.0);
+		uint8_t sample = wav.data()[i];
+		in[i] = complex((float)sample, 0.0);
 	}
 
 	FFT::init();
