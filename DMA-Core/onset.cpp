@@ -35,18 +35,20 @@ namespace DMA::Onset {
 		for (int i = 0; i < in.size(); i++) {
 			if (start_idx > stop_idx) {
 				if (in[i] < THRESHOLD) {
-					//noteStops.Add(jj * ((stftRep.wSamp - 1) / 2));	// add stop sample index
 					stops.push_back(i);
-					stop_idx = stop_idx + 1;
+					stop_idx++;
 				}
 			}
-			else if (start_idx - stop_idx == 0) {
+			else if (start_idx == stop_idx) {
 				if (in[i] > THRESHOLD) {
-					//noteStarts.Add(jj * ((stftRep.wSamp - 1) / 2)); // add start sample index
 					starts.push_back(i);
-					start_idx = start_idx + 1;
+					start_idx++;
 				}
 			}
+		}
+
+		if (start_idx > stop_idx) {
+			stops.push_back(in.size() - 1);
 		}
 	}
 }
