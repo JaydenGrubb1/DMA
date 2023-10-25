@@ -43,9 +43,9 @@ namespace DMA::GUI {
 		_window_class.lpszMenuName = nullptr;
 		_window_class.lpszClassName = title;
 		_window_class.hIconSm = nullptr;
-		::RegisterClassExW(&_window_class);
+		::RegisterClassEx(&_window_class);
 
-		_window_handle = ::CreateWindowW(
+		_window_handle = ::CreateWindow(
 			_window_class.lpszClassName,
 			title,
 			WS_POPUP,	// WS_OVERLAPPEDWINDOW
