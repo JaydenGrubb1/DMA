@@ -76,7 +76,7 @@ namespace DMA::FFT {
 		fft(odd, odd_out);
 
 		for (int i = 0; i < in.size() / 2; i++) {
-			complex t = twiddles[i * WINDOW_SIZE / in.size()] * odd_out[i];
+			complex t = _twiddles[i * WINDOW_SIZE / in.size()] * odd_out[i];
 			out[i] = even_out[i] + t;
 			out[i + in.size() / 2] = even_out[i] - t;
 		}
@@ -118,8 +118,6 @@ namespace DMA::FFT {
 			fft(fft_in, fft_out);
 		}
 #endif
-
-		// TODO: Multiply by a window function (gausian, hamming, etc) ???
 	}
 
 	void format(std::vector<complex>& in, std::vector<float>& out) {
