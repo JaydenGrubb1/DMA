@@ -5,16 +5,15 @@
 #include "onset.h"
 
 namespace DMA::Onset {
-	void detect(std::vector<float>& in, std::vector<float>& out) {
-		// TODO: Implement onset detection
-
+	void analyze(std::vector<float>& in, std::vector<float>& out) {
 		out.resize(in.size() / (FFT::WINDOW_SIZE / 2));
 		float max = 0;
 
 		for (int i = 0; i < out.size(); i++) {
 			out[i] = 0;
 			for (int j = 0; j < FFT::WINDOW_SIZE / 2; j++) {
-				out[i] += pow(in[i * (FFT::WINDOW_SIZE / 2) + j] * j, 2);
+				float sample = in[i * (FFT::WINDOW_SIZE / 2) + j];
+				out[i] += pow(sample * j, 2);
 			}
 
 			if (out[i] > max) {
@@ -23,7 +22,31 @@ namespace DMA::Onset {
 		}
 
 		for (int i = 0; i < out.size(); i++) {
-			out[i] /= max;
+			out[i] = pow(out[i] / max, 2);
+		}
+	}
+
+	void detect(std::vector<float>& in, std::vector<int>& starts, std::vector<int>& stops) {
+		int start_idx = 0;
+		int stop_idx = 0;
+
+		constexpr auto THRESHOLD = 0.001;
+
+		for (int i = 0; i < in.size(); i++) {
+			if (start_idx > stop_idx) {
+				if (in[i] < THRESHOLD) {
+					//noteStops.Add(jj * ((stftRep.wSamp - 1) / 2));	// add stop sample index
+					stops.push_back(i);
+					stop_idx = stop_idx + 1;
+				}
+			}
+			else if (start_idx - stop_idx == 0) {
+				if (in[i] > THRESHOLD) {
+					//noteStarts.Add(jj * ((stftRep.wSamp - 1) / 2)); // add start sample index
+					starts.push_back(i);
+					start_idx = start_idx + 1;
+				}
+			}
 		}
 	}
 }

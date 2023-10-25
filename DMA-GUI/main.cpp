@@ -111,11 +111,24 @@ void analyze_audio(void) {
 	std::vector<complex> out(wav.num_samples());
 
 	for (size_t i = 0; i < wav.num_samples(); i += wav.sample_size()) {
-		in[i] = complex((float)wav.data()[i], 0.0);
+		if (wav.sample_size() == 2) {
+			uint16_t sample = wav.data()[i + 1] << 8 | wav.data()[i];
+			in[i] = complex((float)sample, 0.0);
+		}
+		else {
+			uint8_t sample = wav.data()[i];
+			in[i] = complex((float)sample, 0.0);
+		}
 	}
 
 	FFT::stft(in, out);
 	FFT::format(out, freq);
 
-	Onset::detect(freq, hfc);
+	std::vector<int> starts;
+	std::vector<int> stops;
+
+	Onset::analyze(freq, hfc);
+	Onset::detect(hfc, starts, stops);
+
+	MessageBox(nullptr, std::to_wstring(starts.size()).c_str(), L"Onsets", MB_OK);
 }
