@@ -44,7 +44,7 @@ namespace DMA::Audio {
 		/// Returns a pointer to the audio data
 		/// </summary>
 		/// <returns>A pointer to the audio data</returns>
-		const char *data() const { return _data; }
+		const char* data() const { return _data; }
 
 		/// <summary>
 		/// Returns the number of samples in the audio data
@@ -69,6 +69,11 @@ namespace DMA::Audio {
 		/// </summary>
 		/// <returns>The sampling rate of the audio data</returns>
 		uint32_t sample_rate() const { return _header.sample_rate; }
+
+		/// <summary>
+		/// Returns a sample from the audio data at the given index
+		/// </summary>
+		float operator [](const size_t& index) const;
 	private:
 		WAVHeader _header = { 0 };
 		char* _data = nullptr;

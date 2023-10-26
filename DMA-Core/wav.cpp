@@ -33,6 +33,27 @@ namespace DMA::Audio {
 		return *this;
 	}
 
+	float WAV::operator [](const size_t& index) const {
+		size_t offset = index * _header.sample_size / 8;
+
+		if (_header.sample_size == 8) {
+			uint8_t sample = _data[offset];
+			return ((float)sample - 128) / 128;
+		}
+		else if (_header.sample_size == 16) {
+			uint16_t sample = _data[offset + 1] << 8 | _data[offset];
+			return ((float)sample - 128) / 128;
+		}
+		else if (_header.sample_size == 24) {
+			uint32_t sample = _data[offset + 2] << 16 | _data[offset + 1] << 8 | _data[offset];
+			return ((float)sample - 128) / 128;
+		}
+		else if (_header.sample_size == 32) {
+			uint32_t sample = _data[offset + 3] << 24 | _data[offset + 2] << 16 | _data[offset + 1] << 8 | _data[offset];
+			return ((float)sample - 128) / 128;
+		}
+	}
+
 	WAV::~WAV() {
 		delete[] _data;
 	}
