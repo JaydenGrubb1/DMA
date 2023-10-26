@@ -13,10 +13,9 @@ using namespace DMA;
 constexpr auto DEFAULT_MAX_FREQ = 6000;
 
 static Audio::WAV wav;
+static std::vector<float> time_data;
 static std::vector<float> freq;
 static std::vector<float> hfc;
-static std::vector<int> starts;
-static std::vector<int> stops;
 static std::vector<float> start_times;
 static std::vector<float> stop_times;
 static bool audio_file_loaded = false;
@@ -35,6 +34,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	bool show_onsets = false;
 	bool show_offsets = false;
+
+	int current_time = 0;
 
 	while (GUI::is_active) {
 		if (!GUI::begin())
@@ -73,7 +74,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 		if (audio_file_loaded) {
 			if (ImGui::BeginTabBar("tabs")) {
-				if (ImGui::BeginTabItem("Debug")) {
+				if (ImGui::BeginTabItem("Frequency")) {
 					ImGui::Checkbox("Show Onsets", &show_onsets);
 					ImGui::SameLine();
 					ImGui::Checkbox("Show Offsets", &show_offsets);
@@ -85,9 +86,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 						if (ImPlot::BeginPlot("Frequency Spectrum", ImVec2(-1, 0), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus)) {
 							ImPlot::PushColormap("Spectrum");
 							ImPlot::SetupAxisLimits(ImAxis_Y1, 0, DEFAULT_MAX_FREQ);
-							ImPlot::SetupAxisZoomConstraints(ImAxis_Y1, 0, DEFAULT_MAX_FREQ);
-							ImPlot::SetupAxisZoomConstraints(ImAxis_X1, 0, duration);
 							ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, wav.sample_rate());
+							ImPlot::SetupAxisZoomConstraints(ImAxis_Y1, 0, DEFAULT_MAX_FREQ);
+							ImPlot::SetupAxisLimits(ImAxis_X1, 0, duration);
 							ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, duration);
 							ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoTickLabels);
 
@@ -106,9 +107,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 						if (ImPlot::BeginPlot("High-Frequency Content", ImVec2(-1, 0), ImPlotFlags_NoMenus)) {
 							ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1);
-							ImPlot::SetupAxisZoomConstraints(ImAxis_Y1, 0, 1);
-							ImPlot::SetupAxisZoomConstraints(ImAxis_X1, 0, duration);
 							ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, 1);
+							ImPlot::SetupAxisLimits(ImAxis_X1, 0, duration);
 							ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, duration);
 							
 							ImPlot::PlotLine("##hfc", hfc.data(), hfc.size(), duration / hfc.size());
@@ -118,6 +118,38 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 							if (show_offsets) {
 								ImPlot::PlotInfLines("Offsets", stop_times.data(), stop_times.size());
 							}
+
+							ImPlot::EndPlot();
+						}
+						ImPlot::EndSubplots();
+					}
+					ImGui::EndTabItem();
+				}
+
+				if (ImGui::BeginTabItem("Octaves")) {
+					ImGui::SliderInt("Time", &current_time, 0, hfc.size() - 1);
+					int chunk_idx = current_time;
+					float duration = wav.num_samples() / wav.sample_rate();
+
+					if (ImPlot::BeginSubplots("plots", 2, 1, ImVec2(-1, ImGui::GetContentRegionAvail().y), ImPlotSubplotFlags_NoTitle)) {
+						if (ImPlot::BeginPlot("Time Domain", ImVec2(-1, 0), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus)) {
+							ImPlot::SetupAxisLimits(ImAxis_Y1, -0.5, 0.5);
+							ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, -0.5, 0.5);
+							ImPlot::SetupAxisLimits(ImAxis_X1, 0, 500.0 * FFT::WINDOW_SIZE / wav.sample_rate());
+							ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, 500.0 * FFT::WINDOW_SIZE / wav.sample_rate());
+
+							ImPlot::PlotLine("##time", time_data.data() + chunk_idx * FFT::WINDOW_SIZE / 2, FFT::WINDOW_SIZE / 2, 1000.0 / wav.sample_rate());
+							ImPlot::EndPlot();
+						}
+
+						if (ImPlot::BeginPlot("Frequency Domain", ImVec2(-1, 0), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus)) {
+							ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1);
+							ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, 1);
+							ImPlot::SetupAxisLimits(ImAxis_X1, 0, DEFAULT_MAX_FREQ);
+							ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, wav.sample_rate());
+							ImPlot::SetupAxisZoomConstraints(ImAxis_X1, 0, DEFAULT_MAX_FREQ);
+
+							ImPlot::PlotLine("##freq", freq.data() + chunk_idx * FFT::WINDOW_SIZE / 2, FFT::WINDOW_SIZE / 2, wav.sample_rate() / (FFT::WINDOW_SIZE / 2.0));
 							ImPlot::EndPlot();
 						}
 						ImPlot::EndSubplots();
@@ -150,19 +182,24 @@ void analyze_audio(void) {
 
 	std::vector<complex> in(wav.num_samples());
 	std::vector<complex> out(wav.num_samples());
+	
+	time_data.resize(wav.num_samples());
 
 	for (size_t i = 0; i < wav.num_samples(); i += wav.sample_size()) {
 		if (wav.sample_size() == 1) {
 			uint8_t sample = wav.data()[i];
 			in[i] = complex((float)sample, 0.0);
+			time_data[i] = (((float)sample) - 128) / 128;
 		}
 		else if (wav.sample_size() == 2) {
 			uint16_t sample = wav.data()[i + 1] << 8 | wav.data()[i];
 			in[i] = complex((float)sample, 0.0);
+			time_data[i] = (((float)sample) - 128) / 128;
 		}
 		else if (wav.sample_size() == 4) {
 			uint32_t sample = wav.data()[i + 3] << 24 | wav.data()[i + 2] << 16 | wav.data()[i + 1] << 8 | wav.data()[i];
 			in[i] = complex((float)sample, 0.0);
+			time_data[i] = (((float)sample) - 128) / 128;
 		}
 		else {
 			throw std::runtime_error("Unsupported sample size");
@@ -172,15 +209,15 @@ void analyze_audio(void) {
 	FFT::stft(in, out);
 	FFT::format(out, freq);
 
-	starts.clear();
-	stops.clear();
+	std::vector<int> starts;
+	std::vector<int> stops;
 
 	Onset::analyze(freq, hfc);
 	Onset::detect(hfc, starts, stops);
 
 	start_times.clear();
-	starts.reserve(starts.size());
 	stop_times.clear();
+	starts.reserve(starts.size());
 	stop_times.reserve(stops.size());
 
 	float duration = wav.num_samples() / wav.sample_rate();
