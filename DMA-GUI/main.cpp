@@ -27,7 +27,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return EXIT_FAILURE;
 	}
 
-	ImPlot::AddColormap("Spectrum", spec_colormap, 256);
+	ImPlot::AddColormap("Spectrum", spec_colormap, COLOR_MAP_SIZE);
 	ImGuiIO& io = ImGui::GetIO();
 
 	FFT::init();
@@ -95,7 +95,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 							ImPlot::PlotHeatmap("spec", freq.data(),
 								FFT::WINDOW_SIZE / 2,
 								freq.size() / (FFT::WINDOW_SIZE / 2),
-								0, 1.01, nullptr,
+								0, 1, nullptr,
 								ImPlotPoint(0, wav.sample_rate()),
 								ImPlotPoint((double)wav.num_samples() / wav.sample_rate(), 0),
 								ImPlotHeatmapFlags_ColMajor
