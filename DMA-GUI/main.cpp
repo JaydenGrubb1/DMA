@@ -13,7 +13,6 @@ using namespace DMA;
 constexpr auto DEFAULT_MAX_FREQ = 6000;
 
 static Audio::WAV wav;
-static std::vector<float> time_data;
 static std::vector<float> freq;
 static std::vector<float> hfc;
 static std::vector<float> start_times;
@@ -21,6 +20,7 @@ static std::vector<float> stop_times;
 static bool audio_file_loaded = false;
 
 void analyze_audio(void);
+ImPlotPoint audio_getter(int idx, void* data);
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd) {
 	if (!GUI::init(L"Digital Music Analyzer")) {
@@ -128,8 +128,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 				if (ImGui::BeginTabItem("Octaves")) {
 					ImGui::SliderInt("Time", &current_time, 0, hfc.size() - 1);
-					int chunk_idx = current_time;
-					float duration = wav.num_samples() / wav.sample_rate();
 
 					if (ImPlot::BeginSubplots("plots", 2, 1, ImVec2(-1, ImGui::GetContentRegionAvail().y), ImPlotSubplotFlags_NoTitle)) {
 						if (ImPlot::BeginPlot("Time Domain", ImVec2(-1, 0), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus)) {
@@ -138,7 +136,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 							ImPlot::SetupAxisLimits(ImAxis_X1, 0, 500.0 * FFT::WINDOW_SIZE / wav.sample_rate());
 							ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, 500.0 * FFT::WINDOW_SIZE / wav.sample_rate());
 
-							ImPlot::PlotLine("##time", time_data.data() + chunk_idx * FFT::WINDOW_SIZE / 2, FFT::WINDOW_SIZE / 2, 1000.0 / wav.sample_rate());
+							ImPlot::PlotLineG("##time", audio_getter, (void*)&current_time, FFT::WINDOW_SIZE / 2);
 							ImPlot::EndPlot();
 						}
 
@@ -149,7 +147,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 							ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, wav.sample_rate());
 							ImPlot::SetupAxisZoomConstraints(ImAxis_X1, 0, DEFAULT_MAX_FREQ);
 
-							ImPlot::PlotLine("##freq", freq.data() + chunk_idx * FFT::WINDOW_SIZE / 2, FFT::WINDOW_SIZE / 2, wav.sample_rate() / (FFT::WINDOW_SIZE / 2.0));
+							ImPlot::PlotLine("##freq", freq.data() + current_time * FFT::WINDOW_SIZE / 2, FFT::WINDOW_SIZE / 2, wav.sample_rate() / (FFT::WINDOW_SIZE / 2.0));
 							ImPlot::EndPlot();
 						}
 						ImPlot::EndSubplots();
@@ -182,12 +180,9 @@ void analyze_audio(void) {
 
 	std::vector<complex> in(wav.num_samples());
 	std::vector<complex> out(wav.num_samples());
-	
-	time_data.resize(wav.num_samples());
 
 	for (size_t i = 0; i < wav.num_samples(); i++) {
 		in[i] = complex(wav[i], 0);
-		time_data[i] = wav[i];
 	}
 
 	FFT::stft(in, out);
@@ -211,4 +206,9 @@ void analyze_audio(void) {
 	}
 
 	audio_file_loaded = true;
+}
+
+ImPlotPoint audio_getter(int idx, void* data) {
+	int offset = *(int*)data;
+	return ImPlotPoint(idx * 1000.0 / wav.sample_rate(), wav[idx + offset * FFT::WINDOW_SIZE / 2]);
 }
