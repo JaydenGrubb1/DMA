@@ -26,14 +26,7 @@ namespace DMA::FFT {
 	}
 #endif
 
-	void init(void) {
-		for (int i = 0; i < WINDOW_SIZE; i++) {
-			float angle = 2 * M_PI * i / WINDOW_SIZE;
-			_twiddles[i] = std::polar(1.0f, -angle);
-		}
-	}
-
-	void fft(std::span<complex> in, std::span<complex> out) {
+	void __fft(std::span<complex> in, std::span<complex> out) {
 #ifdef _USE_ITERATIVE_FFT
 		int log2n = log2(in.size());
 
@@ -83,6 +76,21 @@ namespace DMA::FFT {
 #endif
 	}
 
+	void init(void) {
+		for (int i = 0; i < WINDOW_SIZE; i++) {
+			float angle = 2 * M_PI * i / WINDOW_SIZE;
+			_twiddles[i] = std::polar(1.0f, -angle);
+		}
+	}
+
+	void fft(std::span<complex> in, std::vector<complex>& out) {
+		int size = 1 << (int)ceil(log2(in.size()));
+		std::vector<complex> temp(size, 0);
+		out.resize(size);
+		memcpy(temp.data(), in.data(), in.size() * sizeof(complex));
+		__fft(temp, out);
+	}
+
 	void stft(std::vector<complex>& in, std::vector<complex>& out) {
 		int window_count = floor((double)in.size() / WINDOW_SIZE);
 		int total_samples = window_count * WINDOW_SIZE;
@@ -105,7 +113,7 @@ namespace DMA::FFT {
 					}
 					std::span<complex> fft_in(in.data() + i, WINDOW_SIZE);
 					std::span<complex> fft_out(out.data() + i * WINDOW_OVERLAP, WINDOW_SIZE);
-					fft(fft_in, fft_out);
+					__fft(fft_in, fft_out);
 				}}
 			);
 		}

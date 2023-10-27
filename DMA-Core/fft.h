@@ -27,7 +27,7 @@ namespace DMA::FFT {
 	/// </summary>
 	/// <param name="in">The input buffer</param>
 	/// <param name="out">The output buffer</param>
-	void fft(std::span<complex> in, std::span<complex> out);
+	void fft(std::span<complex> in, std::vector<complex>& out);
 
 	/// <summary>
 	///	Computes the STFT (Short Time Fourier Transform) of the given data
