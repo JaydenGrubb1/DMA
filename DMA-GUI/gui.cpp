@@ -4,8 +4,8 @@
 #include <iostream>
 
 #include "gui.h"
-#include "ImGui/imgui_impl_win32.h"
-#include "ImGui/imgui_impl_dx11.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/imgui_impl_dx11.h"
 
 constexpr auto WIDTH = 1280;
 constexpr auto HEIGHT = 800;

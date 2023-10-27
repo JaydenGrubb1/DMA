@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ImGui/imgui.h"
-#include "ImPlot/implot.h"
+#include "imgui/imgui.h"
+#include "implot/implot.h"
 
 namespace DMA::GUI {
 	/// <summary>
