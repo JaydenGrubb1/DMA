@@ -5,6 +5,16 @@
 
 namespace DMA::Onset {
 	/// <summary>
+	/// The threshold for the onset detection to consider a new onset
+	/// </summary>
+	constexpr auto ONSET_THRESHOLD = 0.0015;
+
+	/// <summary>
+	/// The threshold for the harmonic ratio to consider a frequency as a harmonic
+	/// </summary>
+	constexpr auto HARMONIC_RATIO_THRESHOLD = 0.1;
+
+	/// <summary>
 	/// Analyzes the given data using the HFC (High Frequency Content) algorithm
 	/// </summary>
 	/// <param name="in">The input buffer</param>

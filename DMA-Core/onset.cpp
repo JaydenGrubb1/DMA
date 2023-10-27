@@ -32,17 +32,15 @@ namespace DMA::Onset {
 		int start_idx = 0;
 		int stop_idx = 0;
 
-		constexpr auto THRESHOLD = 0.001;
-
 		for (int i = 0; i < in.size(); i++) {
 			if (start_idx > stop_idx) {
-				if (in[i] < THRESHOLD) {
+				if (in[i] < ONSET_THRESHOLD) {
 					stops.push_back(i);
 					stop_idx++;
 				}
 			}
 			else if (start_idx == stop_idx) {
-				if (in[i] > THRESHOLD) {
+				if (in[i] > ONSET_THRESHOLD) {
 					starts.push_back(i);
 					start_idx++;
 				}
@@ -72,7 +70,14 @@ namespace DMA::Onset {
 				}
 			}
 
-			// TODO: Check for harmonics
+			for (int div = 6; div > 1; div--) {
+				float harmonic = std::abs(fft_out[max_index / div]);
+				if (harmonic / max_value > HARMONIC_RATIO_THRESHOLD) {
+					max_index /= div;
+					max_value = harmonic;
+				}
+			}
+
 			out[i] = max_index * sampling_rate / fft_out.size();
 		}
 
