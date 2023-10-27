@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "fft.h"
+#include "onset.h"
 #include "wav.h"
 
 using namespace DMA;
@@ -13,44 +14,28 @@ constexpr auto ITERATIONS = 1000;
 
 int main(int argc, char** argv) {
 	Audio::WAV wav(L"../../sample.wav");
+	
+	std::vector<complex> in(wav.num_samples());
+	std::vector<complex> out;
 
-	auto num_samples = wav.size() / wav.sample_size();
-	std::vector<complex> in(num_samples);
-	std::vector<complex> out(num_samples);
-
-	for (size_t i = 0; i < num_samples; i += wav.sample_size()) {
-		uint8_t sample = wav.data()[i];
-		in[i] = complex((float)sample, 0.0);
+	for (size_t i = 0; i < wav.num_samples(); i++) {
+		in[i] = complex(wav[i], 0);
 	}
 
-	FFT::init();
+	FFT::stft(in, out);
 
-	auto average = 0;
-	for (int i = 0; i < ITERATIONS; i++) {
-		auto start = std::chrono::high_resolution_clock::now();
-		FFT::stft(in, out);
-		auto end = std::chrono::high_resolution_clock::now();
-		average += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-	}
-	printf("Average time: %d microseconds\n", average / ITERATIONS);
+	std::vector<float> freq;
+	FFT::format(out, freq);
 
-	std::ofstream stream;
-	stream.open("../../output.csv");
+	std::vector<float> hfc;
+	Onset::analyze(freq, hfc);
 
-	std::vector<float> freq(out.size() / 2);
-	int chunks = out.size() / FFT::WINDOW_SIZE;
-	int chunk_size = FFT::WINDOW_SIZE / 2;
+	std::vector<int> starts;
+	std::vector<int> stops;
+	Onset::detect(hfc, starts, stops);
 
-	for (int i = 0; i < chunks; i++) {
-		for (int j = 0; j < chunk_size; j++) {
-			float magnitude = std::abs(out[i * FFT::WINDOW_SIZE + j]);
-			stream << magnitude << ",";
-			freq[i * chunk_size + j] = magnitude;
-		}
-		stream << "\n";
-	}
-
-	stream.close();
+	std::vector<float> notes;
+	Onset::identify(in, starts, stops, wav.sample_rate(), notes);
 
 	return EXIT_SUCCESS;
 }
