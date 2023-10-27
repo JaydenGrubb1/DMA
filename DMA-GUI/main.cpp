@@ -190,9 +190,11 @@ void analyze_audio(void) {
 
 	std::vector<int> starts;
 	std::vector<int> stops;
+	std::vector<float> notes;
 
 	Onset::analyze(freq, hfc);
 	Onset::detect(hfc, starts, stops);
+	Onset::identify(in, starts, stops, wav.sample_rate(), notes);
 
 	start_times.clear();
 	stop_times.clear();

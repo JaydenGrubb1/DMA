@@ -1,5 +1,6 @@
 #pragma once
 
+#include <span>
 #include <vector>
 
 namespace DMA::Onset {
@@ -17,4 +18,14 @@ namespace DMA::Onset {
 	/// <param name="starts">The output buffer for the onsets</param>
 	/// <param name="stops">The output buffer for the offsets</param>
 	void detect(std::vector<float>& in, std::vector<int>& starts, std::vector<int>& stops);
+
+	/// <summary>
+	/// Identifies the frequencies contained in the given data between the given onsets and offsets
+	/// </summary>
+	/// <param name="in">The signal input buffer</param>
+	/// <param name="starts">The onset input buffer</param>
+	/// <param name="stops">The offset input buffer</param>
+	/// <param name="sampling_rate">The sampling rate of the signal</param>
+	/// <param name="out">The frequency output buffer</param>
+	void identify(std::span<complex> in, std::span<int> starts, std::span<int> stops, float sampling_rate, std::vector<float>& out);
 }
