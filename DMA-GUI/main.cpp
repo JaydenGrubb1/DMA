@@ -86,7 +86,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 						if (ImPlot::BeginPlot("Frequency Spectrum", ImVec2(-1, 0), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus)) {
 							ImPlot::PushColormap("Spectrum");
 							ImPlot::SetupAxisLimits(ImAxis_Y1, 0, DEFAULT_MAX_FREQ);
-							ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, wav.sample_rate());
+							ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, wav.sample_rate() / 2);
 							ImPlot::SetupAxisZoomConstraints(ImAxis_Y1, 0, DEFAULT_MAX_FREQ);
 							ImPlot::SetupAxisLimits(ImAxis_X1, 0, duration);
 							ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, duration);
@@ -96,7 +96,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 								FFT::WINDOW_SIZE / 2,
 								freq.size() / (FFT::WINDOW_SIZE / 2),
 								0, 1, nullptr,
-								ImPlotPoint(0, wav.sample_rate()),
+								ImPlotPoint(0, wav.sample_rate() / 2),
 								ImPlotPoint((double)wav.num_samples() / wav.sample_rate(), 0),
 								ImPlotHeatmapFlags_ColMajor
 							);
@@ -144,10 +144,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 							ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1);
 							ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, 1);
 							ImPlot::SetupAxisLimits(ImAxis_X1, 0, DEFAULT_MAX_FREQ);
-							ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, wav.sample_rate());
+							ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 0, wav.sample_rate() / 2);
 							ImPlot::SetupAxisZoomConstraints(ImAxis_X1, 0, DEFAULT_MAX_FREQ);
 
-							ImPlot::PlotLine("##freq", freq.data() + current_time * FFT::WINDOW_SIZE / 2, FFT::WINDOW_SIZE / 2, wav.sample_rate() / (FFT::WINDOW_SIZE / 2.0));
+							ImPlot::PlotLine("##freq", freq.data() + current_time * FFT::WINDOW_SIZE / 2, FFT::WINDOW_SIZE / 2, (float)wav.sample_rate() / FFT::WINDOW_SIZE);
 							ImPlot::EndPlot();
 						}
 						ImPlot::EndSubplots();
