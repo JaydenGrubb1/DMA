@@ -24,7 +24,7 @@
     <ClInclude Include="onset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="xml.h">
+    <ClInclude Include="sheet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <ClCompile Include="onset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="xml.cpp">
+    <ClCompile Include="sheet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

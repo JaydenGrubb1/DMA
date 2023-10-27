@@ -22,13 +22,13 @@
     <ClInclude Include="fft.h" />
     <ClInclude Include="onset.h" />
     <ClInclude Include="wav.h" />
-    <ClInclude Include="xml.h" />
+    <ClInclude Include="sheet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="fft.cpp" />
     <ClCompile Include="onset.cpp" />
     <ClCompile Include="wav.cpp" />
-    <ClCompile Include="xml.cpp" />
+    <ClCompile Include="sheet.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
