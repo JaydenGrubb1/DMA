@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="TinyXML2">
+      <UniqueIdentifier>{96ee23eb-4269-49fc-a5d5-7e82d53d5d40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TinyXML2\Header Files">
+      <UniqueIdentifier>{40d1a40b-2a85-4fec-b0ae-bc753c13f755}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TinyXML2\Source Files">
+      <UniqueIdentifier>{b9c92b3c-e221-4f48-a5aa-f567df77bc0b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fft.h">
@@ -27,6 +36,9 @@
     <ClInclude Include="sheet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="tinyxml2\tinyxml2.h">
+      <Filter>TinyXML2\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="fft.cpp">
@@ -40,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="sheet.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml2\tinyxml2.cpp">
+      <Filter>TinyXML2\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

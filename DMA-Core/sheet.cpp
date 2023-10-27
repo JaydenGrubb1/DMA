@@ -4,18 +4,15 @@
 #include <cstdio>
 
 #include "sheet.h"
+#include "tinyxml2/tinyxml2.h"
+
+using namespace tinyxml2;
 
 namespace DMA::Music {
-	Sheet::Sheet(const wchar_t* file) {
-		std::ifstream stream;
-		stream.open(file);
+	// TODO: Add wchar version
 
-		if (!stream.is_open()) {
-			throw std::runtime_error("Failed to open file");
-		}
-
-		// TODO: Is this how I should load an XML, look into tinyxml2
-		std::string str((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
-		printf("%s\n", str.c_str());
+	Sheet::Sheet(const char* file) {
+		XMLDocument doc;
+		doc.LoadFile(file);
 	}
 }

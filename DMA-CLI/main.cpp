@@ -15,7 +15,7 @@ constexpr auto ITERATIONS = 1000;
 
 int main(int argc, char** argv) {
 	Audio::WAV wav(L"../../sample.wav");
-	Music::Sheet sheet(L"../../sample.xml");
+	Music::Sheet sheet("../../sample.xml");
 	
 	std::vector<complex> in(wav.num_samples());
 	std::vector<complex> out;

@@ -11,7 +11,7 @@ namespace DMA::Music {
 	class Sheet {
 	public:
 		Sheet() = default;
-		Sheet(const wchar_t* file);
+		Sheet(const char* file);
 	private:
 		std::vector<Note> _notes;
 	};

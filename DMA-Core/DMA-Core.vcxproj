@@ -21,12 +21,14 @@
   <ItemGroup>
     <ClInclude Include="fft.h" />
     <ClInclude Include="onset.h" />
+    <ClInclude Include="tinyxml2\tinyxml2.h" />
     <ClInclude Include="wav.h" />
     <ClInclude Include="sheet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="fft.cpp" />
     <ClCompile Include="onset.cpp" />
+    <ClCompile Include="tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="wav.cpp" />
     <ClCompile Include="sheet.cpp" />
   </ItemGroup>
