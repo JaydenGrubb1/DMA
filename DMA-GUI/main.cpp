@@ -127,7 +127,20 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 				}
 
 				if (ImGui::BeginTabItem("Octaves")) {
-					ImGui::SliderInt("Time", &current_time, 0, hfc.size() - 1);
+					ImGui::PushButtonRepeat(true);
+					if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {
+						if (current_time > 0)
+							current_time--;
+					}
+					ImGui::SameLine();
+					ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 52 + ImGui::GetStyle().ItemSpacing.x * 2);
+					ImGui::SliderInt("##current_time", &current_time, 0, hfc.size() - 1);
+					ImGui::SameLine();
+					if (ImGui::ArrowButton("##right", ImGuiDir_Right)) {
+						if (current_time < hfc.size() - 1)
+							current_time++;
+					}
+					ImGui::PopButtonRepeat();
 
 					if (ImPlot::BeginSubplots("plots", 2, 1, ImVec2(-1, ImGui::GetContentRegionAvail().y), ImPlotSubplotFlags_NoTitle)) {
 						if (ImPlot::BeginPlot("Time Domain", ImVec2(-1, 0), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus)) {
