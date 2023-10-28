@@ -14,6 +14,10 @@ namespace DMA::Music {
 		XMLDocument doc;
 		doc.LoadFile(file);
 
+		if (!doc.RootElement()) {
+			throw std::runtime_error("Failed to open file");
+		}
+
 		auto score = doc.FirstChildElement("score-partwise");
 		auto part = score->FirstChildElement("part");
 		auto measure = part->FirstChildElement("measure");
