@@ -28,6 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="fft.cpp" />
+    <ClCompile Include="note.cpp" />
     <ClCompile Include="onset.cpp" />
     <ClCompile Include="tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="wav.cpp" />

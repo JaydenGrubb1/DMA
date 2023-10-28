@@ -19,13 +19,35 @@ namespace DMA::Music {
 
 	class Note {
 	public:
+		/// <summary>
+		/// Constructs an empty note
+		/// </summary>
 		Note() = default;
-		Note(int pitch, float duration) : _pitch(pitch), _duration(duration) {}
-		Note(char step, int octave, int alter, int duration) {
 
-		}
+		/// <summary>
+		/// Constructs a note with the given frequency and duration
+		/// </summary>
+		/// <param name="frequency">The frequency of the note</param>
+		/// <param name="duration">The duration of the note</param>
+		Note(float frequency, float duration);
+
+		/// <summary>
+		/// Constructs a note with the given step, octave, alter and duration
+		/// </summary>
+		/// <param name="step">The step of the note</param>
+		/// <param name="octave">The octave of the note</param>
+		/// <param name="alter">The alter of the note</param>
+		/// <param name="duration">The duration of the note</param>
+		Note(char step, int octave, int alter, float duration);
+
+		/// <summary>
+		/// Parses the given character into a pitch
+		/// </summary>
+		/// <param name="c">The character to parse</param>
+		/// <returns>The parsed pitch</returns>
+		static Pitch parse(char c);
 	private:
-		int _pitch = 0;
+		float _frequency = 0;
 		float _duration = 0;
 	};
 }

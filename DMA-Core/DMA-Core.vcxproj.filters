@@ -39,6 +39,9 @@
     <ClInclude Include="tinyxml2\tinyxml2.h">
       <Filter>TinyXML2\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="note.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="fft.cpp">
@@ -55,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="tinyxml2\tinyxml2.cpp">
       <Filter>TinyXML2\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="note.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
