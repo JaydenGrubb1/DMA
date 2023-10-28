@@ -17,14 +17,15 @@ namespace DMA::Music {
 		B = 11
 	};
 
-	struct Note {
-		int pitch = 0;
-		float duration = 0;
-
+	class Note {
+	public:
 		Note() = default;
-		Note(int pitch, float duration) : pitch(pitch), duration(duration) {}
+		Note(int pitch, float duration) : _pitch(pitch), _duration(duration) {}
 		Note(char step, int octave, int alter, int duration) {
 
 		}
+	private:
+		int _pitch = 0;
+		float _duration = 0;
 	};
 }
