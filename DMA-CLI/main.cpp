@@ -24,6 +24,7 @@ int main(int argc, char** argv) {
 		in[i] = complex(wav[i], 0);
 	}
 
+	FFT::init();
 	FFT::stft(in, out);
 
 	std::vector<float> freq;
