@@ -1,4 +1,9 @@
+#define _USE_PARALLEL_ANALYZE
 #define _USE_PARALLEL_IDENT
+
+#ifndef _ANALYZE_PARALLEL_SCALE
+#define _ANALYZE_PARALLEL_SCALE 1
+#endif
 
 #ifndef _IDENT_PARALLEL_SCALE
 #define _IDENT_PARALLEL_SCALE 1
@@ -12,27 +17,64 @@
 #include "onset.h"
 
 namespace DMA::Onset {
-	void analyze(std::vector<float>& in, std::vector<float>& out) {
-		out.resize(in.size() / (FFT::WINDOW_SIZE / 2));
-		float max = 0;
-
+	void __analyze(std::span<float> in, std::span<float> out, float* max) {
 		for (int i = 0; i < out.size(); i++) {
-			out[i] = 0;
 			for (int j = 0; j < FFT::WINDOW_SIZE / 2; j++) {
 				float sample = in[i * (FFT::WINDOW_SIZE / 2) + j];
 				out[i] += pow(sample * j, 2);
 			}
 
-			if (out[i] > max) {
-				max = out[i];
+			if (out[i] > *max) {
+				*max = out[i];
 			}
 		}
+	}
+
+	void analyze(std::vector<float>& in, std::vector<float>& out) {
+		out.resize(in.size() / (FFT::WINDOW_SIZE / 2), 0);
+
+#ifdef _USE_PARALLEL_ANALYZE
+		int num_threads = std::thread::hardware_concurrency() * _ANALYZE_PARALLEL_SCALE;
+		int thread_samples = ceil((double)out.size() / num_threads);
+		std::vector<float> maxs(num_threads, 0);
+		std::vector<std::thread> threads;
+		threads.reserve(num_threads);
+
+		for (int i = 0; i < num_threads; i++) {
+			threads.emplace_back([&, thread_samples, i]() {
+				int start = i * thread_samples;
+				int end = (i + 1) * thread_samples;
+
+				if (end > out.size()) {
+					end = out.size();
+				}
+
+				std::span<float> analyze_in(in.data() + start * (FFT::WINDOW_SIZE / 2), (end - start)* (FFT::WINDOW_SIZE / 2));
+				std::span<float> analyze_out(out.data() + start, end - start);
+
+				__analyze(analyze_in, analyze_out, &maxs[i]);
+				}
+			);
+		}
+
+		for (auto& thread : threads) {
+			thread.join();
+		}
+
+		float max = 0;
+		for (int i = 0; i < maxs.size(); i++) {
+			if (maxs[i] > max) {
+				max = maxs[i];
+			}
+		}
+#else
+		float max = 0;
+		__analyze(in, out, &max);
+#endif
 
 		for (int i = 0; i < out.size(); i++) {
 			out[i] = pow(out[i] / max, 2);
 		}
-
-		// Parallelize this function ???
 	}
 
 	void detect(std::vector<float>& in, std::vector<int>& starts, std::vector<int>& stops) {
