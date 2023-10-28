@@ -78,6 +78,14 @@ namespace DMA::Music {
 		/// <param name="c">The character to parse</param>
 		/// <returns>The parsed pitch</returns>
 		static Pitch parse(char c);
+
+		/// <summary>
+		/// Parses the given character and alter into a pitch
+		/// </summary>
+		/// <param name="c">The character to parse</param>
+		/// <param name="alter">The alter to parse</param>
+		/// <returns>The parsed pitch</returns>
+		static Pitch parse(char c, int alter);
 	private:
 		float _frequency = 0;
 		float _duration = 0;

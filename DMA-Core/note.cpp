@@ -16,13 +16,12 @@ namespace DMA::Music {
 	}
 
 	Note::Note(char step, int octave, int alter, float duration) : _duration(duration) {
-		Pitch pitch = parse(step);
+		Pitch pitch = parse(step, alter);
 
 		if (pitch == Invalid) {
 			throw std::runtime_error("Invalid step");
 		}
 
-		pitch = (Pitch)(alter + (int)pitch);
 		_frequency = 440 * pow(2, (pitch - A) / 12.0f + (octave - 4));
 	}
 
@@ -55,5 +54,13 @@ namespace DMA::Music {
 		default:
 			return Invalid;
 		}
+	}
+
+	Pitch Note::parse(char c, int alter) {
+		Pitch pitch = parse(c);
+		if (pitch == Invalid) {
+			return Invalid;
+		}
+		return (Pitch)(alter + (int)pitch);
 	}
 }
