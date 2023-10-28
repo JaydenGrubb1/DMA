@@ -33,12 +33,12 @@ namespace DMA::Music {
 						throw std::runtime_error("Invalid sheet file");
 					}
 
-					char step_val = step->GetText()[0];
-					int octave_val = octave->IntText();
-					int alter_val = alter ? alter->IntText() : 0;
-					int duration_val = duration->IntText();
-
-					_notes.emplace_back(step_val, octave_val, alter_val, duration_val);
+					_notes.emplace_back(
+						step->GetText()[0],
+						octave->IntText(),
+						alter ? alter->IntText() : 0,
+						duration->IntText()
+					);
 				}
 
 				note = note->NextSiblingElement("note");
