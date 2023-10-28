@@ -32,6 +32,14 @@ namespace DMA::Music {
 		Note(float frequency, float duration);
 
 		/// <summary>
+		/// Constructs a note with the given pitch, octave and duration
+		/// </summary>
+		/// <param name="pitch">The pitch of the note</param>
+		/// <param name="octave">The octave of the note</param>
+		/// <param name="duration">The duration of the note</param>
+		Note(Pitch pitch, int octave, float duration);
+
+		/// <summary>
 		/// Constructs a note with the given step, octave, alter and duration
 		/// </summary>
 		/// <param name="step">The step of the note</param>
@@ -39,6 +47,30 @@ namespace DMA::Music {
 		/// <param name="alter">The alter of the note</param>
 		/// <param name="duration">The duration of the note</param>
 		Note(char step, int octave, int alter, float duration);
+
+		/// <summary>
+		/// Returns the frequency of the note
+		/// </summary>
+		/// <returns>The frequency of the note</returns>
+		float frequency() const { return _frequency; }
+
+		/// <summary>
+		/// Returns the duration of the note
+		/// </summary>
+		/// <returns>The duration of the note</returns>
+		float duration() const { return _duration; }
+
+		/// <summary>
+		/// Returns the pitch of the note
+		/// </summary>
+		/// <returns>The pitch of the note</returns>
+		Pitch pitch() const;
+
+		/// <summary>
+		/// Returns the octave of the note
+		/// </summary>
+		/// <returns>The octave of the note</returns>
+		int octave() const;
 
 		/// <summary>
 		/// Parses the given character into a pitch
