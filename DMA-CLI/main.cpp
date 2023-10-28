@@ -11,8 +11,6 @@
 
 using namespace DMA;
 
-constexpr auto ITERATIONS = 1000;
-
 int main(int argc, char** argv) {
 	Audio::WAV wav(L"../../sample.wav");
 	Music::Sheet sheet("../../sample.xml");
