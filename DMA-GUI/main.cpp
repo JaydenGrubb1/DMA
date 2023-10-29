@@ -52,9 +52,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		}
 
 		ImGui::SameLine();
-		if (!audio_file_loaded) {
+		//if (!audio_file_loaded) {
 			ImGui::BeginDisabled();
-		}
+		//}
 		if (ImGui::Button("Open Sheet")) {
 			WCHAR file_name[260] = { 0 };
 			if (GUI::open_file(file_name, 260, L"XML Files (*.xml)\0*.xml\0All Files (*.*)\0*.*\0")) {
@@ -62,9 +62,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 				MessageBox(nullptr, file_name, L"File Name", MB_OK);
 			}
 		}
-		if (!audio_file_loaded) {
+		//if (!audio_file_loaded) {
 			ImGui::EndDisabled();
-		}
+		//}
 
 		std::string fps = std::format("FPS: {:.0f} ({:.1f} ms)", io.Framerate, 1000.0f / io.Framerate);
 		ImGui::SameLine(ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize(fps.c_str()).x);
