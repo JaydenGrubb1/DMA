@@ -30,6 +30,21 @@ namespace DMA::Music {
 		/// <param name="index">The index of the note</param>
 		/// <returns>The note at the given index</returns>
 		Note operator[](size_t index) const { return _notes[index]; }
+
+		/// <summary>
+		/// Adds a note to the sheet
+		/// </summary>
+		/// <param name="note">The note to add</param>
+		void add(Note note) { _notes.push_back(note); }
+
+		/// <summary>
+		/// Adds a note to the sheet
+		/// </summary>
+		/// <param name="frequency">The frequency of the note to add</param>
+		/// <param name="duration">The duration of the note to add</param>
+		void add(float frequency, float duration) {
+			_notes.emplace_back(frequency, duration);
+		}
 	private:
 		std::vector<Note> _notes;
 	};

@@ -52,20 +52,18 @@ int main(int argc, char** argv) {
 	auto onset_duration = std::chrono::duration_cast<std::chrono::milliseconds>(onset_time - fft_time);
 	auto total_duration = std::chrono::duration_cast<std::chrono::milliseconds>(onset_time - start_time);
 
-	printf("File load time: %5d ms\n", file_load_duration.count());
-	printf("FFT time:       %5d ms\n", fft_duration.count());
-	printf("Onset time:     %5d ms\n", onset_duration.count());
-	printf("Total time:     %5d ms\n", total_duration.count());
+	printf("File load time: %5zu ms\n", file_load_duration.count());
+	printf("FFT time:       %5zu ms\n", fft_duration.count());
+	printf("Onset time:     %5zu ms\n", onset_duration.count());
+	printf("Total time:     %5zu ms\n", total_duration.count());
 	printf("\n");
 
 	//// BELOW CODE VERY HACKY /// NO TIME TO UNDERSTAND MUSIC STUFF ///
 
 	Music::Sheet actual;
-	actual.notes().reserve(notes.size());
 
 	for (int i = 0; i < notes.size(); i++) {
-		// TODO: Properly calculate note duration
-		actual.notes().emplace_back(notes[i], 1);
+		actual.add(notes[i], 1);
 	}
 
 	printf("Note | Expected | Actual |\n");
