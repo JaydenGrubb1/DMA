@@ -65,8 +65,8 @@ namespace DMA::FFT {
 			odd[i] = in[2 * i + 1];
 		}
 
-		fft(even, even_out);
-		fft(odd, odd_out);
+		__fft(even, even_out);
+		__fft(odd, odd_out);
 
 		for (int i = 0; i < in.size() / 2; i++) {
 			complex t = _twiddles[i * WINDOW_SIZE / in.size()] * odd_out[i];
@@ -126,7 +126,7 @@ namespace DMA::FFT {
 			std::span<complex> fft_in(in.data() + i, WINDOW_SIZE);
 			std::span<complex> fft_out(out.data() + i * WINDOW_OVERLAP, WINDOW_SIZE);
 
-			fft(fft_in, fft_out);
+			__fft(fft_in, fft_out);
 		}
 #endif
 	}
