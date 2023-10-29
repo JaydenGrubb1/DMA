@@ -12,8 +12,13 @@
 using namespace DMA;
 
 int main(int argc, char** argv) {
+
+	auto start_time = std::chrono::high_resolution_clock::now();
+
 	Audio::WAV wav(L"../../sample.wav");
 	Music::Sheet sheet("../../sample.xml");
+
+	auto file_load_time = std::chrono::high_resolution_clock::now();
 
 	std::vector<complex> in(wav.num_samples());
 	std::vector<complex> out;
@@ -24,6 +29,8 @@ int main(int argc, char** argv) {
 
 	FFT::init();
 	FFT::stft(in, out);
+
+	auto fft_time = std::chrono::high_resolution_clock::now();
 
 	std::vector<float> freq;
 	FFT::format(out, freq);
@@ -37,6 +44,19 @@ int main(int argc, char** argv) {
 
 	std::vector<float> notes;
 	Onset::identify(in, starts, stops, wav.sample_rate(), notes);
+
+	auto onset_time = std::chrono::high_resolution_clock::now();
+
+	auto file_load_duration = std::chrono::duration_cast<std::chrono::milliseconds>(file_load_time - start_time);
+	auto fft_duration = std::chrono::duration_cast<std::chrono::milliseconds>(fft_time - file_load_time);
+	auto onset_duration = std::chrono::duration_cast<std::chrono::milliseconds>(onset_time - fft_time);
+	auto total_duration = std::chrono::duration_cast<std::chrono::milliseconds>(onset_time - start_time);
+
+	printf("File load time: %5d ms\n", file_load_duration.count());
+	printf("FFT time:       %5d ms\n", fft_duration.count());
+	printf("Onset time:     %5d ms\n", onset_duration.count());
+	printf("Total time:     %5d ms\n", total_duration.count());
+	printf("\n");
 
 	//// BELOW CODE VERY HACKY /// NO TIME TO UNDERSTAND MUSIC STUFF ///
 
