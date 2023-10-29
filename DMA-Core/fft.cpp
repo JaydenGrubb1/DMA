@@ -26,7 +26,7 @@ namespace DMA::FFT {
 	}
 #endif
 
-	void __fft(std::span<complex> in, std::span<complex> out) {
+	static void __fft(std::span<complex> in, std::span<complex> out) {
 #ifdef _USE_ITERATIVE_FFT
 		int log2n = log2(in.size());
 

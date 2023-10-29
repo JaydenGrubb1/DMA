@@ -17,7 +17,7 @@
 #include "onset.h"
 
 namespace DMA::Onset {
-	void __analyze(std::span<float> in, std::span<float> out, float* max) {
+	static void __analyze(std::span<float> in, std::span<float> out, float* max) {
 		for (int i = 0; i < out.size(); i++) {
 			for (int j = 0; j < FFT::WINDOW_SIZE / 2; j++) {
 				float sample = in[i * (FFT::WINDOW_SIZE / 2) + j];
@@ -101,7 +101,7 @@ namespace DMA::Onset {
 		}
 	}
 
-	void __identify(std::span<complex> in, int start, int stop, float sampling_rate, float* out) {
+	static void __identify(std::span<complex> in, int start, int stop, float sampling_rate, float* out) {
 		std::span<complex> fft_in(in.data() + start * FFT::WINDOW_SIZE / 2, (stop - start) * FFT::WINDOW_SIZE / 2);
 		std::vector<complex> fft_out;
 		FFT::fft(fft_in, fft_out);
