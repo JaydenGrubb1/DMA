@@ -28,6 +28,8 @@ namespace DMA::Onset {
 				*max = out[i];
 			}
 		}
+
+		// TODO: Fix occasional bug when _ANALYZE_PARALLEL_SCALE greater than 2
 	}
 
 	void analyze(std::vector<float>& in, std::vector<float>& out) {
