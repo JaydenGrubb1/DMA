@@ -12,7 +12,6 @@
 using namespace DMA;
 
 int main(int argc, char** argv) {
-
 	auto start_time = std::chrono::high_resolution_clock::now();
 
 	Audio::WAV wav(L"../../sample.wav");
@@ -68,8 +67,7 @@ int main(int argc, char** argv) {
 
 	printf("Note | Expected | Actual |\n");
 	printf("-----+----------+--------|\n");
-	for (int i = 0; i < std::max(sheet.size(), actual.size()); i++)
-	{
+	for (int i = 0; i < std::max(sheet.size(), actual.size()); i++) {
 		std::string actual_note = "";
 		if (i < actual.size()) {
 			actual_note = actual[i].to_string();
