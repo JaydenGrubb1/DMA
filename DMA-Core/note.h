@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace DMA::Music {
 	enum Pitch {
 		Invalid = -1,
@@ -71,6 +73,12 @@ namespace DMA::Music {
 		/// </summary>
 		/// <returns>The octave of the note</returns>
 		int octave() const;
+
+		/// <summary>
+		/// Returns the string representation of the note
+		/// </summary>
+		/// <returns>The string representation of the note</returns>
+		std::string to_string() const;
 
 		/// <summary>
 		/// Parses the given character into a pitch

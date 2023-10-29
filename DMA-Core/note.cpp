@@ -35,6 +35,55 @@ namespace DMA::Music {
 		return (int)round(pitch) / 12 - 1;
 	}
 
+	std::string Note::to_string() const {
+		std::string str = "";
+
+		switch (pitch()) {
+		case C:
+			str += "C";
+			break;
+		case Db:
+			str += "Db";
+			break;
+		case D:
+			str += "D";
+			break;
+		case Eb:
+			str += "Eb";
+			break;
+		case E:
+			str += "E";
+			break;
+		case F:
+			str += "F";
+			break;
+		case Gb:
+			str += "Gb";
+			break;
+		case G:
+			str += "G";
+			break;
+		case Ab:
+			str += "Ab";
+			break;
+		case A:
+			str += "A";
+			break;
+		case Bb:
+			str += "Bb";
+			break;
+		case B:
+			str += "B";
+			break;
+		}
+
+		if (pitch() > Invalid) {
+			str += std::to_string(octave());
+		}
+
+		return str;
+	}
+
 	Pitch Note::parse(char c) {
 		switch (c) {
 		case 'C':
