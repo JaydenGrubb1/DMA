@@ -32,7 +32,10 @@ There are also various pre-processing directives that can be used to modify the 
 
 ## Dependencies
 
-`DMA-GUI` requires DirectX 11 support.
+- All projects require C++ 20 support.
+- Visual Studio 2022 (v143)
+  - other versions may work but have not been tested
+- `DMA-GUI` requires DirectX 11 support.
 
 ## Sample Data
 
