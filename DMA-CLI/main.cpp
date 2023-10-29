@@ -14,8 +14,17 @@ using namespace DMA;
 int main(int argc, char** argv) {
 	auto start_time = std::chrono::high_resolution_clock::now();
 
-	Audio::WAV wav(L"../../sample.wav");
-	Music::Sheet sheet("../../sample.xml");
+	Audio::WAV wav;
+	Music::Sheet sheet;
+
+	try {
+		wav = Audio::WAV(L"../data/sample.wav");
+		sheet = Music::Sheet("../data/sample.xml");
+	}
+	catch (std::exception& e) {
+		printf("Error: %s\n", e.what());
+		return EXIT_FAILURE;
+	}
 
 	auto file_load_time = std::chrono::high_resolution_clock::now();
 

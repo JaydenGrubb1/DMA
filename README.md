@@ -32,11 +32,11 @@ There are also various pre-processing directives that can be used to modify the 
 
 ## Dependencies
 
-- All projects require C++ 20 support.
-- Visual Studio 2022 (v143)
+- All projects require C++ 20 support
+- All projects require Visual Studio 2022 (v143)
   - other versions may work but have not been tested
 - `DMA-GUI` requires DirectX 11 support.
 
 ## Sample Data
 
-Sample data is provided in the `Sample Data` folder as part of the submission. The `DMA-CLI` application expects the data to be in the parent folder of the solution directory. The `DMA-GUI` does not require the data to be in any specific location as it will prompt the user to select the desired file.
+Sample data is provided in the `Sample Data` folder as part of the submission. The `DMA-CLI` application expects the data to be in the `..\data\` folder relative to the executable and to be named `sample.wav` and `sample.xml`. If the application is run from within Visual Studio, there is already a `data` folder present. The `DMA-GUI` does not require the data to be in any specific location as it will prompt the user to select the desired file.
