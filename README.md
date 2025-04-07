@@ -1,18 +1,24 @@
-# CAB401
+# Digital Music Analyser
+
+This project was completed as part of a university project (CAB401) with the goal of parallelising and increasing the performance of an application. The source code for the original application can be found [here](https://github.com/JaydenGrubb1/DtmfDetection). The core focus of the assignment was the FFT algorithm so other aspects are not fully complete.
 
 ## Overview
+The project is broken down into three sections:
 
-This solution contains three projects:
-- **DMA-Core**: The core library for the DMA algorithm compiled as a static library
-- **DMA-CLI**: A command line interface for the application
-  - This application demonstrates all capabilites of the core FFT/Onset library
-  - Missing proper note error calculation and output
-  - Currently just prints the measured notes and the expected notes from the sheet music
-  - Also prints the execution time
-- **DMA-GUI**: A graphical user interface for the application
-  - This application was intended to replace the original C# GUI application
-  - It is useful for testing the FFT, HFC and Detection algorithms output
-  - Also missing ability to display notes and their errors
+- **DMA-Core**: Provides the core functionality of the application
+  - FFT and STFT algorithms
+  - Onset detection
+  - WAV file loader
+  - Sheet music parser
+- **DMA-CLI**: CLI interface for the application
+  - Loads sample audio file and music sheet
+  - Outputs detected notes
+  - Outputs execution time
+- **DMA-GUI**: GUI interface for the application
+  - Frequency spectrum display
+  - High Frequency Content display
+  - Onset/Offset markers
+  - Time/Frequency domain plot for signal windows 
 
 ## Building
 
