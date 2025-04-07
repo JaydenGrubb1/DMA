@@ -18,7 +18,7 @@ The project is broken down into three sections:
   - Frequency spectrum display
   - High Frequency Content display
   - Onset/Offset markers
-  - Time/Frequency domain plot for signal windows
+  - Time/Frequency domain plot for STFT 'buckets'
 
 ## Images
 ![Frequency Tab](docs/frequency_tab.png)
