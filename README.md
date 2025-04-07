@@ -18,7 +18,11 @@ The project is broken down into three sections:
   - Frequency spectrum display
   - High Frequency Content display
   - Onset/Offset markers
-  - Time/Frequency domain plot for signal windows 
+  - Time/Frequency domain plot for signal windows
+
+## Images
+![Frequency Tab](docs/frequency_tab.png)
+![Octaves Tab](docs/octaves_tab.png)
 
 ## Building
 
